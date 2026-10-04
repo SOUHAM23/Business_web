@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build Output
+dist/
+build/
+
+# Backup dump files & local test vaults
+*.enc
+*.json.enc
+*.sql
+
+# Secrets & Environment variables
+.env
+.env.local
+need.md
+need.txt
+
+# Logs & OS artifacts
+*.log
+.DS_Store
+Thumbs.db

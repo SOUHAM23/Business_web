@@ -1,0 +1,154 @@
+// PRISMA SCHEMA FOR SANCHAY PATH SUPABASE POSTGRESQL DATABASE
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Customer {
+  id            String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  phone         String        @unique @db.VarChar(20)
+  name          String?       @db.VarChar(255)
+  email         String?       @db.VarChar(255)
+  dob           DateTime?     @db.Date
+  age           Int?
+  location      String?       @db.VarChar(255)
+  pincode       String?       @db.VarChar(20)
+  gender        String?       @db.VarChar(50)
+  maritalStatus String?       @map("marital_status") @db.VarChar(50)
+  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  enquiries    Enquiry[]
+  appointments Appointment[]
+
+  @@map("customers")
+}
+
+model WhatsAppSession {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  phone        String   @unique @db.VarChar(20)
+  currentState String   @default("MAIN_MENU") @map("current_state") @db.VarChar(100)
+  statePayload Json     @default("{}") @map("state_payload")
+  expiresAt    DateTime @default(dbgenerated("(now() + '24 hours'::interval)")) @map("expires_at") @db.Timestamptz
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("whatsapp_sessions")
+}
+
+model Enquiry {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId String?   @map("customer_id") @db.Uuid
+  source     String    @default("website") @db.VarChar(50)
+  service    String    @db.VarChar(100)
+  subService String?   @map("sub_service") @db.VarChar(100)
+  message    String?   @db.Text
+  status     String    @default("NEW") @db.VarChar(50)
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt  DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  customer Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  @@map("enquiries")
+}
+
+model Appointment {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId    String?   @map("customer_id") @db.Uuid
+  service       String    @db.VarChar(100)
+  preferredDate DateTime  @map("preferred_date") @db.Date
+  preferredTime String?   @map("preferred_time") @db.VarChar(50)
+  status        String    @default("PENDING") @db.VarChar(50)
+  notes         String?   @db.Text
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  customer Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  @@map("appointments")
+}
+
+model IncomingMessage {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  externalMessageId String    @unique @map("external_message_id") @db.VarChar(255)
+  phone             String    @db.VarChar(20)
+  messageType       String    @default("text") @map("message_type") @db.VarChar(50)
+  receivedAt        DateTime  @default(now()) @map("received_at") @db.Timestamptz
+  processedAt       DateTime? @map("processed_at") @db.Timestamptz
+  processingStatus  String    @default("PROCESSED") @map("processing_status") @db.VarChar(50)
+
+  @@map("incoming_messages")
+}
+
+model SiteContent {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  contentKey  String   @unique @map("content_key") @db.VarChar(100)
+  contentValue String  @map("content_value") @db.Text
+  contentType String   @default("text") @map("content_type") @db.VarChar(50)
+  isPublished Boolean  @default(true) @map("is_published")
+  updatedBy   String?  @map("updated_by") @db.VarChar(255)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("site_content")
+}
+
+model AdminUser {
+  id         String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  authUserId String?    @unique @map("auth_user_id") @db.Uuid
+  email      String     @unique @db.VarChar(255)
+  role       String     @default("VIEWER") @db.VarChar(50)
+  active     Boolean    @default(true)
+  createdAt  DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt  DateTime   @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  auditLogs AuditLog[]
+
+  @@map("admin_users")
+}
+
+model AuditLog {
+  id           String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  adminUserId  String?    @map("admin_user_id") @db.Uuid
+  action       String     @db.VarChar(100)
+  resourceType String     @map("resource_type") @db.VarChar(100)
+  resourceId   String?    @map("resource_id") @db.VarChar(255)
+  metadata     Json?      @default("{}")
+  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz
+
+  adminUser AdminUser? @relation(fields: [adminUserId], references: [id], onDelete: SetNull)
+
+  @@map("audit_logs")
+}
+
+model SheetExport {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  startedAt     DateTime  @default(now()) @map("started_at") @db.Timestamptz
+  completedAt   DateTime? @map("completed_at") @db.Timestamptz
+  status        String    @default("STARTED") @db.VarChar(50)
+  type          String    @default("12H_SNAPSHOT") @db.VarChar(50)
+  fileReference String?   @map("file_reference") @db.VarChar(255)
+  errorMessage  String?   @map("error_message") @db.Text
+  rowCount      Int       @default(0) @map("row_count")
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("sheet_exports")
+}
+
+model BackupRun {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  startedAt        DateTime  @default(now()) @map("started_at") @db.Timestamptz
+  completedAt      DateTime? @map("completed_at") @db.Timestamptz
+  status           String    @default("STARTED") @db.VarChar(50)
+  backupType       String    @default("FULL_DB") @map("backup_type") @db.VarChar(50)
+  storageReference String?   @map("storage_reference") @db.VarChar(500)
+  checksum         String?   @db.VarChar(255)
+  errorMessage     String?   @map("error_message") @db.Text
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("backup_runs")
+}

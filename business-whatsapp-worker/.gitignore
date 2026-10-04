@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Cloudflare Wrangler Build & Dev
+.wrangler/
+dist/
+
+# Secrets & Environment variables
+.env
+.dev.vars
+*.pem
+need.md
+need.txt
+
+# Logs & OS artifacts
+*.log
+.DS_Store
+Thumbs.db

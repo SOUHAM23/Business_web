@@ -4,31 +4,16 @@ node_modules/
 # Next.js build output
 .next/
 out/
-build/
-dist/
-
-# Cloudflare Wrangler
-.wrangler/
 
 # Environment variables & secrets
 .env
 .env.local
 .env.development.local
-.env.test.local
 .env.production.local
-.dev.vars
 need.md
 need.txt
-whyneed.md
-whyneed.txt
 
-# Temporary & backup artifacts
+# Logs & OS artifacts
 *.log
-*.enc
-*.tmp
-
-# Operating System & IDE
 .DS_Store
 Thumbs.db
-.vscode/
-.idea/
