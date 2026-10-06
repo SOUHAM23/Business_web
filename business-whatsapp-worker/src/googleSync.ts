@@ -2,10 +2,6 @@ import { Env } from './types';
 import { WorkerSupabaseClient } from './supabaseClient';
 
 export async function runGoogleSheetSync(env: Env): Promise<{ success: boolean; rows: number; error?: string }> {
-  if (!env.GOOGLE_SERVICE_ACCOUNT_EMAIL || !env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY || !env.GOOGLE_SPREADSHEET_ID) {
-    return { success: false, rows: 0, error: 'Google Sheet API credentials not configured in Worker secrets.' };
-  }
-
   const supabase = new WorkerSupabaseClient(env);
 
   try {
@@ -27,7 +23,6 @@ export async function runGoogleSheetSync(env: Env): Promise<{ success: boolean; 
     const enquiries: any[] = await res.json();
 
     // 2. Format Sanitized Rows for Business Sheet
-    // Headers: Date, Customer Name, Mobile, Email, Location, Service, Source, Status, Message
     const rows = [
       ['Date', 'Customer Name', 'Mobile', 'Email', 'Location', 'Service', 'Source', 'Status', 'Message'],
       ...enquiries.map((e) => [
@@ -43,14 +38,72 @@ export async function runGoogleSheetSync(env: Env): Promise<{ success: boolean; 
       ]),
     ];
 
-    // 3. Generate Service Account JWT Token for Google API
+    // 3. Try User OAuth Token Sync from admin_user_tokens table first
+    const tokenRes = await fetch(
+      `${env.SUPABASE_URL.replace(/\/$/, '')}/rest/v1/admin_user_tokens?select=refresh_token,spreadsheet_id&limit=1`,
+      {
+        headers: {
+          'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+          'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+        },
+      }
+    );
+
+    if (tokenRes.ok) {
+      const tokens: any[] = await tokenRes.json();
+      if (tokens.length > 0 && tokens[0].refresh_token && tokens[0].spreadsheet_id) {
+        const refreshToken = tokens[0].refresh_token;
+        const spreadsheetId = tokens[0].spreadsheet_id;
+
+        // Exchange Refresh Token for User Access Token
+        const refreshExchangeRes = await fetch('https://oauth2.googleapis.com/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `client_id=${encodeURIComponent(env.GOOGLE_CLIENT_ID || '')}&client_secret=${encodeURIComponent(env.GOOGLE_CLIENT_SECRET || '')}&refresh_token=${encodeURIComponent(refreshToken)}&grant_type=refresh_token`,
+        });
+
+        if (refreshExchangeRes.ok) {
+          const refreshData: any = await refreshExchangeRes.json();
+          const userAccessToken = refreshData.access_token;
+
+          // Update Sheet via User Access Token
+          const userUpdateRes = await fetch(
+            `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/Sheet1!A1:I${rows.length}?valueInputOption=USER_ENTERED`,
+            {
+              method: 'PUT',
+              headers: {
+                'Authorization': `Bearer ${userAccessToken}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                range: `Sheet1!A1:I${rows.length}`,
+                majorDimension: 'ROWS',
+                values: rows,
+              }),
+            }
+          );
+
+          if (userUpdateRes.ok) {
+            await recordSheetExportStatus(env, 'SUCCESS', enquiries.length, null);
+            return { success: true, rows: enquiries.length };
+          }
+        }
+      }
+    }
+
+    // 4. Fallback to Service Account if configured
+    if (!env.GOOGLE_SERVICE_ACCOUNT_EMAIL || !env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY || !env.GOOGLE_SPREADSHEET_ID) {
+      const errorMsg = 'No User OAuth refresh token found and Service Account credentials not configured.';
+      await recordSheetExportStatus(env, 'FAILED', 0, errorMsg);
+      return { success: false, rows: 0, error: errorMsg };
+    }
+
     const jwt = await createGoogleJwt(
       env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
       env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY,
       'https://www.googleapis.com/auth/spreadsheets'
     );
 
-    // 4. Clear & Update Sheet via Google Sheets REST API
     const sheetId = env.GOOGLE_SPREADSHEET_ID;
     const updateRes = await fetch(
       `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1!A1:I${rows.length}?valueInputOption=USER_ENTERED`,
@@ -73,9 +126,7 @@ export async function runGoogleSheetSync(env: Env): Promise<{ success: boolean; 
       throw new Error(`Google Sheets API error: ${errText}`);
     }
 
-    // 5. Record Export Success in sheet_exports table
     await recordSheetExportStatus(env, 'SUCCESS', enquiries.length, null);
-
     return { success: true, rows: enquiries.length };
   } catch (err: any) {
     const errorMsg = err.message || String(err);
@@ -104,9 +155,6 @@ async function recordSheetExportStatus(env: Env, status: string, rowCount: numbe
   } catch (e) {}
 }
 
-/**
- * Generate Google JWT Token for Service Account in Web Standard Crypto
- */
 async function createGoogleJwt(email: string, privateKeyPem: string, scope: string): Promise<string> {
   const header = { alg: 'RS256', typ: 'JWT' };
   const now = Math.floor(Date.now() / 1000);
@@ -122,7 +170,6 @@ async function createGoogleJwt(email: string, privateKeyPem: string, scope: stri
   const encodedClaimSet = base64UrlEncode(JSON.stringify(claimSet));
   const unsignedToken = `${encodedHeader}.${encodedClaimSet}`;
 
-  // Parse RSA Private Key PEM
   const pemHeader = '-----BEGIN PRIVATE KEY-----';
   const pemFooter = '-----END PRIVATE KEY-----';
   let pemContents = privateKeyPem.replace(/\\n/g, '\n').trim();
@@ -157,7 +204,6 @@ async function createGoogleJwt(email: string, privateKeyPem: string, scope: stri
   const encodedSignature = base64UrlEncodeUint8Array(new Uint8Array(signature));
   const jwt = `${unsignedToken}.${encodedSignature}`;
 
-  // Exchange JWT for OAuth access token
   const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

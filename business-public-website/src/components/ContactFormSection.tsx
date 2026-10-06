@@ -19,7 +19,14 @@ export default function ContactFormSection() {
     setStatus('loading');
     setFeedbackMsg('');
 
+    if (formData.phone.length !== 10) {
+      setStatus('error');
+      setFeedbackMsg('Please enter a valid 10-digit mobile number.');
+      return;
+    }
+
     try {
+
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -85,14 +92,22 @@ export default function ContactFormSection() {
             </div>
           </div>
 
-          <div className="direct-contact-bar">
-            <div className="contact-chip">
-              <span>📞 Mobile:</span>
-              <a href="tel:+919876543210">+91 98765 43210</a>
+          <div className="direct-contact-bar" style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+            <div className="contact-chip" style={{ fontSize: '0.85rem' }}>
+              <span>📍 Office Address:</span>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
+                House of PADA Sova, Uttar Kowgachi Feeder Road, Shyamnagar, North 24 Parganas, West Bengal, Pin-743127
+              </span>
             </div>
-            <div className="contact-chip">
-              <span>✉️ Email:</span>
-              <a href="mailto:info@sanchaypath.com">info@sanchaypath.com</a>
+            <div style={{ display: 'flex', gap: '0.85rem', flexWrap: 'wrap' }}>
+              <div className="contact-chip">
+                <span>📞 Mobile:</span>
+                <a href="tel:+919876543210">+91 98765 43210</a>
+              </div>
+              <div className="contact-chip">
+                <span>✉️ Email:</span>
+                <a href="mailto:contact@sanchaypath.com">contact@sanchaypath.com</a>
+              </div>
             </div>
           </div>
         </div>
@@ -130,17 +145,23 @@ export default function ContactFormSection() {
               </div>
 
               <div className="form-field-group">
-                <label htmlFor="phone">Mobile Number *</label>
+                <label htmlFor="phone">Mobile Number (10 Digits) *</label>
                 <input
                   id="phone"
                   type="tel"
                   required
+                  maxLength={10}
+                  pattern="[0-9]{10}"
                   placeholder="e.g. 9876543210"
                   value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  onChange={(e) => {
+                    const numericValue = e.target.value.replace(/\D/g, '').slice(0, 10);
+                    setFormData({ ...formData, phone: numericValue });
+                  }}
                   className="input-control"
                 />
               </div>
+
 
               <div className="form-field-group">
                 <label htmlFor="email">Email Address (Optional)</label>

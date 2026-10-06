@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createGoogleJwt } from '@/lib/googleJwt';
+import { autoProvisionUserDrive, syncLeadsToUserSheet } from '@/lib/googleDriveUserSync';
 
 export async function POST(req: NextRequest) {
   try {
+    const body = await req.json().catch(() => ({}));
+    const userAccessToken = body.userAccessToken || req.headers.get('x-google-user-token');
+
     // 1. Fetch Enquiries from Supabase via Prisma ORM
     const enquiries = await prisma.enquiry.findMany({
       take: 500,
@@ -29,40 +33,76 @@ export async function POST(req: NextRequest) {
       ]),
     ];
 
+    // 3. User Google OAuth Auto-Provisioning Flow
+    if (userAccessToken) {
+      const assets = await autoProvisionUserDrive(userAccessToken);
+      const synced = await syncLeadsToUserSheet(userAccessToken, assets.spreadsheetId, rows);
+
+      if (!synced) {
+        await prisma.sheetExport.create({
+          data: {
+            status: 'FAILED',
+            type: 'MANUAL_TRIGGER',
+            errorMessage: 'Failed to sync leads to User Google Sheet via User OAuth access token.',
+          },
+        });
+        return NextResponse.json(
+          { success: false, error: 'Google Sheet sync failed via User OAuth.' },
+          { status: 500 }
+        );
+      }
+
+      const exportRecord = await prisma.sheetExport.create({
+        data: {
+          completedAt: new Date(),
+          status: 'SUCCESS',
+          type: 'MANUAL_TRIGGER',
+          rowCount: enquiries.length,
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: `Manual sync completed! Exported ${enquiries.length} rows to User Google Sheet in Sanchay Business folder.`,
+        exportId: exportRecord.id,
+        spreadsheetId: assets.spreadsheetId,
+        folderId: assets.folderId,
+        rows: enquiries.length,
+      });
+    }
+
+    // 4. Fallback: Service Account Flow (if configured)
     const googleEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
     const googleKey = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
     const spreadsheetId = process.env.GOOGLE_SPREADSHEET_ID;
 
     if (!googleEmail || !googleKey || !spreadsheetId) {
-      // Record failed export log in sheet_exports
       await prisma.sheetExport.create({
         data: {
           status: 'FAILED',
           type: 'MANUAL_TRIGGER',
-          errorMessage: 'Google Service Account credentials missing in environment variables.',
+          errorMessage: 'User Google OAuth token missing and no Service Account key configured.',
         },
       });
 
       return NextResponse.json(
-        { success: false, error: 'Google Service Account credentials not configured in environment.' },
+        { success: false, error: 'Please sign in with Google OAuth to auto-provision and sync your Google Sheet.' },
         { status: 400 }
       );
     }
 
-    // 3. Generate Service Account JWT Token for Google Sheets API
     const accessToken = await createGoogleJwt(
       googleEmail,
       googleKey,
       'https://www.googleapis.com/auth/spreadsheets'
     );
 
-    // 4. Update Google Sheet via REST API
     const updateRes = await fetch(
       `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/Sheet1!A1:I${rows.length}?valueInputOption=USER_ENTERED`,
       {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -85,7 +125,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: errText }, { status: 500 });
     }
 
-    // 5. Record Successful Manual Export Log
     const exportRecord = await prisma.sheetExport.create({
       data: {
         completedAt: new Date(),
@@ -97,7 +136,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: `Manual sync completed successfully! Exported ${enquiries.length} rows to Google Sheet.`,
+      message: `Manual sync completed! Exported ${enquiries.length} rows to Google Sheet.`,
       exportId: exportRecord.id,
       rows: enquiries.length,
     });

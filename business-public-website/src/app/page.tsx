@@ -1,7 +1,10 @@
 import Image from 'next/image';
 import HeaderNav from '@/components/HeaderNav';
+import HeroPortrait from '@/components/HeroPortrait';
 import SipCalculator from '@/components/SipCalculator';
 import ContactFormSection from '@/components/ContactFormSection';
+import FounderVisionSection from '@/components/FounderVisionSection';
+import AboutUsSection from '@/components/AboutUsSection';
 import Link from 'next/link';
 
 export default function Home() {
@@ -25,29 +28,32 @@ export default function Home() {
 
       {/* Main Container */}
       <main className="container">
-        {/* Hero Section */}
+        {/* Hero Section with Split Grid & Ambient Gradient Photo Blend */}
         <section className="hero-section">
-          <div className="trust-badge-pill">
-            <span className="pulse-dot" />
-            <span>Certified Wealth Management & Financial Advisory</span>
-          </div>
+          <div className="hero-grid">
+            {/* Left Content Column */}
+            <div className="hero-content">
+              <h1 className="hero-main-title">
+                Crafting Wealth. <br />
+                <span className="hero-gradient-text">Securing Your Future.</span>
+              </h1>
 
-          <h1 className="hero-main-title">
-            Crafting Wealth. <br />
-            <span className="hero-gradient-text">Securing Your Future.</span>
-          </h1>
+              <p className="hero-subtext">
+                Invest Today, Grow Tomorrow. Customized goal-based SIP mutual fund portfolios, comprehensive family insurance, and retirement models engineered for lasting prosperity.
+              </p>
 
-          <p className="hero-subtext">
-            Invest Today, Grow Tomorrow. Customized goal-based SIP mutual fund portfolios, comprehensive family insurance, and retirement models engineered for lasting prosperity.
-          </p>
+              <div className="hero-cta-group">
+                <a href="#contact" className="btn btn-gold-solid">
+                  Schedule Free Consultation →
+                </a>
+                <a href="#calculator" className="btn btn-outline">
+                  Calculate SIP Growth 📈
+                </a>
+              </div>
+            </div>
 
-          <div className="hero-cta-group">
-            <a href="#contact" className="btn btn-gold-solid">
-              Schedule Free Consultation →
-            </a>
-            <a href="#calculator" className="btn btn-outline">
-              Calculate SIP Growth
-            </a>
+            {/* Right Photo Column with Auto-Crossfade Waist-Cropped Portrait */}
+            <HeroPortrait />
           </div>
 
           {/* Stats Banner */}
@@ -70,6 +76,9 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* About Us & 6-Step Strategy Section */}
+        <AboutUsSection />
 
         {/* Services Section */}
         <section id="services" className="services-section">
@@ -150,61 +159,38 @@ export default function Home() {
           <SipCalculator />
         </section>
 
-        {/* Why Sanchay Path Section */}
-        <section id="why-us" style={{ padding: '3rem 0' }}>
-          <div className="section-header">
-            <h2 className="section-title">Why Families Trust Sanchay Path</h2>
-            <p className="section-subtitle">We partner with you every step of the journey to turn financial aspirations into reality.</p>
-          </div>
-
-          <div className="services-cards-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }}>
-            <div className="service-card-item" style={{ textAlign: 'center', alignItems: 'center' }}>
-              <div className="service-icon-box">🎯</div>
-              <h3 className="service-card-title">Goal-Centric Approach</h3>
-              <p className="service-card-desc">Every investment plan is custom-built for your specific family milestones like child education, home purchase, and retirement.</p>
-            </div>
-
-            <div className="service-card-item" style={{ textAlign: 'center', alignItems: 'center' }}>
-              <div className="service-icon-box">🔒</div>
-              <h3 className="service-card-title">Enterprise Security</h3>
-              <p className="service-card-desc">Your financial data and records are protected by enterprise-grade Row Level Security and zero-leak architecture.</p>
-            </div>
-
-            <div className="service-card-item" style={{ textAlign: 'center', alignItems: 'center' }}>
-              <div className="service-icon-box">📊</div>
-              <h3 className="service-card-title">Transparent Tracking</h3>
-              <p className="service-card-desc">Receive regular portfolio health reports and 12-hour sync reports so you always know where your money is growing.</p>
-            </div>
-          </div>
-        </section>
+        {/* Dynamic Founder Vision & Why Sanchay Path Section */}
+        <FounderVisionSection />
 
         {/* Contact Form Section */}
         <section id="contact">
           <ContactFormSection />
         </section>
 
-        {/* Office Info Footer Banner */}
-        <section style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-card)', borderRadius: 'var(--radius-xl)', padding: '2rem', margin: '3rem 0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem' }}>
+        {/* Service Locations & Advisory Contact Banner */}
+        <section style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-card)', borderRadius: 'var(--radius-xl)', padding: '2rem', margin: '3rem 0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem', backdropFilter: 'blur(20px)' }}>
           <div>
-            <h4 style={{ color: 'var(--accent-gold)', marginBottom: '0.5rem', fontSize: '1.1rem' }}>📍 Registered Office</h4>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem' }}>
-              Suite 402, Financial Tower, MG Road, Bengaluru, Karnataka - 560001
+            <h4 style={{ color: 'var(--accent-gold)', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 700 }}>📍 Office Address & Service Region</h4>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: '1.5' }}>
+              <strong>House of PADA Sova</strong>, Uttar Kowgachi Feeder Road, Shyamnagar, North 24 Parganas, West Bengal, Pin-743127<br />
+              <span style={{ fontSize: '0.85rem', color: 'var(--accent-gold)' }}>Serving Barrackpore Sub-Division & Globally 🌐</span>
+            </p>
+          </div>
+
+
+          <div>
+            <h4 style={{ color: 'var(--accent-gold)', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 700 }}>📞 Advisory Helpline</h4>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: '1.5' }}>
+              <strong>Sukanta Dutta</strong> | AMFI-Registered MFD (ARN: 347438)<br />
+              Email: contact@sanchaypath.com
             </p>
           </div>
 
           <div>
-            <h4 style={{ color: 'var(--accent-gold)', marginBottom: '0.5rem', fontSize: '1.1rem' }}>📞 Advisory Helpline</h4>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem' }}>
-              Phone: +91 98765 43210<br />
-              Email: info@sanchaypath.com
-            </p>
-          </div>
-
-          <div>
-            <h4 style={{ color: 'var(--accent-gold)', marginBottom: '0.5rem', fontSize: '1.1rem' }}>🕒 Office Hours</h4>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem' }}>
-              Monday - Saturday: 9:30 AM - 6:30 PM<br />
-              Sunday: Closed
+            <h4 style={{ color: 'var(--accent-gold)', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 700 }}>🕒 Advisory Hours</h4>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: '1.5' }}>
+              Monday - Saturday: 9:30 AM - 6:30 PM (IST)<br />
+              Sunday: By Appointment Only
             </p>
           </div>
         </section>
@@ -213,9 +199,9 @@ export default function Home() {
       {/* Footer */}
       <footer className="footer">
         <div className="container">
-          <p>&copy; {currentYear} Sanchay Path Financial Services. All rights reserved.</p>
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            Disclaimer: Mutual fund investments are subject to market risks. Read all scheme-related documents carefully before investing.
+          <p>&copy; {currentYear} Sanchay Path | Sukanta Dutta | AMFI-Registered Mutual Fund Distributor (ARN: 347438). All rights reserved.</p>
+          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem', lineHeight: '1.5' }}>
+            Disclaimer: Mutual fund investments are subject to market risks. Read all scheme-related documents carefully before investing. Sanchay Path provides goal-based financial planning & mutual fund distribution services.
           </p>
         </div>
       </footer>

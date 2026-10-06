@@ -1,0 +1,154 @@
+/* SIP CALCULATOR STYLES */
+.sip-calculator-wrapper {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: var(--radius-xl);
+  padding: clamp(1.5rem, 5vw, 3rem);
+  margin: 3rem 0;
+  box-shadow: var(--shadow-card);
+}
+
+.calc-header-badge {
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.badge-sparkle {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid var(--accent-green);
+  color: var(--accent-green);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.35rem 0.85rem;
+  border-radius: 30px;
+}
+
+.calc-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 2.5rem;
+  margin-top: 2rem;
+  align-items: center;
+}
+
+@media (max-width: 868px) {
+  .calc-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+.calc-controls-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.slider-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.slider-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.92rem;
+}
+
+.slider-label-title {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.slider-value-display {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--accent-gold);
+}
+
+.range-input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--border-card);
+  outline: none;
+  cursor: pointer;
+}
+
+.range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  border: 3px solid var(--bg-surface);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.range-input::-webkit-slider-thumb:hover {
+  transform: scale(1.18);
+}
+
+.calc-results-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glow);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  box-shadow: var(--shadow-glow);
+}
+
+.result-metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px dashed var(--border-card);
+}
+
+.result-metric-label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.result-metric-val {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.result-highlight-box {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid var(--accent-gold);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.total-wealth-title {
+  font-size: 0.82rem;
+  color: var(--accent-gold);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.total-wealth-val {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-weight: 800;
+  color: var(--text-primary);
+}

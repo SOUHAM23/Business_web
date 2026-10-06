@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function SipCalculator() {
   const [monthlyInvestment, setMonthlyInvestment] = useState<number>(10000);
@@ -20,6 +21,11 @@ export default function SipCalculator() {
   const investedPct = Math.round((investedAmount / totalValue) * 100);
   const gainPct = 100 - investedPct;
 
+  const chartData = [
+    { name: 'Invested Principal', value: Math.round(investedAmount), color: '#3b82f6' },
+    { name: 'Estimated Returns', value: Math.round(estimatedReturns), color: '#10b981' },
+  ];
+
   return (
     <div className="sip-calculator-wrapper">
       <div className="calc-header-badge">
@@ -31,13 +37,13 @@ export default function SipCalculator() {
         <p className="calc-sub-heading">See how disciplined monthly investments create exponential long-term capital wealth.</p>
       </div>
 
-      <div className="calc-card-grid">
+      <div className="calc-grid">
         {/* Sliders Input Column */}
-        <div className="calc-controls-card">
-          <div className="range-control-group">
-            <div className="control-label-row">
-              <label htmlFor="sip-amount">Monthly SIP Investment</label>
-              <span className="value-pill">₹{monthlyInvestment.toLocaleString('en-IN')}</span>
+        <div className="calc-controls-col">
+          <div className="slider-group">
+            <div className="slider-label-row">
+              <label htmlFor="sip-amount" className="slider-label-title">Monthly SIP Investment</label>
+              <span className="slider-value-display">₹{monthlyInvestment.toLocaleString('en-IN')}</span>
             </div>
             <input
               id="sip-amount"
@@ -47,7 +53,7 @@ export default function SipCalculator() {
               step="1000"
               value={monthlyInvestment}
               onChange={(e) => setMonthlyInvestment(Number(e.target.value))}
-              className="styled-slider"
+              className="range-input"
             />
             <div className="slider-limits">
               <span>₹1,000</span>
@@ -55,10 +61,10 @@ export default function SipCalculator() {
             </div>
           </div>
 
-          <div className="range-control-group">
-            <div className="control-label-row">
-              <label htmlFor="sip-rate">Expected Return Rate (p.a.)</label>
-              <span className="value-pill green-pill">{expectedRate}%</span>
+          <div className="slider-group">
+            <div className="slider-label-row">
+              <label htmlFor="sip-rate" className="slider-label-title">Expected Return Rate (p.a.)</label>
+              <span className="slider-value-display green-pill">{expectedRate}%</span>
             </div>
             <input
               id="sip-rate"
@@ -68,7 +74,7 @@ export default function SipCalculator() {
               step="0.5"
               value={expectedRate}
               onChange={(e) => setExpectedRate(Number(e.target.value))}
-              className="styled-slider"
+              className="range-input"
             />
             <div className="slider-limits">
               <span>5%</span>
@@ -76,10 +82,10 @@ export default function SipCalculator() {
             </div>
           </div>
 
-          <div className="range-control-group">
-            <div className="control-label-row">
-              <label htmlFor="sip-duration">Investment Duration</label>
-              <span className="value-pill gold-pill">{timePeriodYears} Years</span>
+          <div className="slider-group">
+            <div className="slider-label-row">
+              <label htmlFor="sip-duration" className="slider-label-title">Investment Duration</label>
+              <span className="slider-value-display gold-pill">{timePeriodYears} Years</span>
             </div>
             <input
               id="sip-duration"
@@ -89,7 +95,7 @@ export default function SipCalculator() {
               step="1"
               value={timePeriodYears}
               onChange={(e) => setTimePeriodYears(Number(e.target.value))}
-              className="styled-slider"
+              className="range-input"
             />
             <div className="slider-limits">
               <span>1 Year</span>
@@ -98,32 +104,58 @@ export default function SipCalculator() {
           </div>
         </div>
 
-        {/* Visual Results & Growth Bar Column */}
+        {/* Recharts Pie Chart & Breakdown Column */}
         <div className="calc-results-card">
           <h3 className="results-card-title">Projected Portfolio Breakdown</h3>
 
-          {/* Visual Dual Growth Bar */}
-          <div className="growth-bar-container">
-            <div className="growth-bar-track">
-              <div
-                className="growth-fill invested-fill"
-                style={{ width: `${investedPct}%` }}
-                title={`Invested: ${investedPct}%`}
-              />
-              <div
-                className="growth-fill gain-fill"
-                style={{ width: `${gainPct}%` }}
-                title={`Capital Gain: ${gainPct}%`}
-              />
+          {/* Professional Recharts Pie Chart */}
+          <div className="pie-chart-wrapper">
+            <div className="pie-chart-container">
+              <ResponsiveContainer width="100%" height={210}>
+                <PieChart>
+                  <Pie
+                    data={chartData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={55}
+                    outerRadius={80}
+                    paddingAngle={4}
+                    dataKey="value"
+                    animationDuration={500}
+                  >
+                    {chartData.map((entry) => (
+                      <Cell key={entry.name} fill={entry.color} stroke="none" />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    formatter={(val: any) => [`₹${Number(val).toLocaleString('en-IN')}`, '']}
+                    contentStyle={{
+                      backgroundColor: '#0f172a',
+                      borderColor: '#f59e0b',
+                      borderRadius: '12px',
+                      color: '#ffffff',
+                      fontSize: '0.85rem',
+                      boxShadow: '0 8px 20px rgba(0,0,0,0.5)',
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+
+              {/* Inner Donut Center Metric */}
+              <div className="pie-chart-center">
+                <span className="pie-center-label">Returns</span>
+                <span className="pie-center-val">{(totalValue / (investedAmount || 1)).toFixed(1)}x</span>
+              </div>
             </div>
 
+            {/* Pie Chart Color Legend */}
             <div className="growth-legend">
               <div className="legend-item">
-                <span className="legend-dot dot-invested" />
-                <span>Invested Capital ({investedPct}%)</span>
+                <span className="legend-dot" style={{ background: '#3b82f6' }} />
+                <span>Invested Principal ({investedPct}%)</span>
               </div>
               <div className="legend-item">
-                <span className="legend-dot dot-gain" />
+                <span className="legend-dot" style={{ background: '#10b981' }} />
                 <span>Estimated Returns ({gainPct}%)</span>
               </div>
             </div>
