@@ -28,10 +28,10 @@ export default function HeaderNav() {
         <Link href="/" className="brand-link" onClick={closeMenu}>
           <div className="brand-logo-wrapper">
             <Image
-              src="/sanlogo.png"
+              src="/icon.png"
               alt="Sanchay Path Logo"
-              width={42}
-              height={42}
+              width={44}
+              height={44}
               className="brand-logo-img"
             />
           </div>
