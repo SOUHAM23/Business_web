@@ -92,14 +92,14 @@ export default function ContactFormSection() {
             </div>
           </div>
 
-          <div className="direct-contact-bar" style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-            <div className="contact-chip" style={{ fontSize: '0.85rem' }}>
+          <div className="direct-contact-bar" style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', width: '100%', maxWidth: '100%' }}>
+            <div className="contact-chip" style={{ fontSize: '0.85rem', display: 'flex', flexWrap: 'wrap', whiteSpace: 'normal', wordBreak: 'break-word', width: '100%' }}>
               <span>📍 Office Address:</span>
               <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
                 House of PADA Sova, Uttar Kowgachi Feeder Road, Shyamnagar, North 24 Parganas, West Bengal, Pin-743127
               </span>
             </div>
-            <div style={{ display: 'flex', gap: '0.85rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', width: '100%' }}>
               <div className="contact-chip">
                 <span>📞 Mobile:</span>
                 <a href="tel:+918910464642">+91 89104 64642</a>

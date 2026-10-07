@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 export interface ServiceItem {
   id: string;
@@ -129,8 +129,34 @@ export const SERVICES_DATA: ServiceItem[] = [
 
 export default function ServicesSection() {
   const [activeSlide, setActiveSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Automatic Horizontal Auto-Scroll Slideshow Effect on Mobile
+  useEffect(() => {
+    if (isPaused) return;
+
+    const timer = setInterval(() => {
+      if (!scrollRef.current) return;
+      const isMobile = window.innerWidth <= 768;
+      if (!isMobile) return;
+
+      setActiveSlide((prev) => {
+        const nextIndex = (prev + 1) % SERVICES_DATA.length;
+        const cardWidth = scrollRef.current ? scrollRef.current.clientWidth * 0.82 : 280;
+        if (scrollRef.current) {
+          scrollRef.current.scrollTo({
+            left: nextIndex * cardWidth,
+            behavior: 'smooth',
+          });
+        }
+        return nextIndex;
+      });
+    }, 3200);
+
+    return () => clearInterval(timer);
+  }, [isPaused]);
 
   const handleScroll = () => {
     if (!scrollRef.current) return;
@@ -164,7 +190,6 @@ export default function ServicesSection() {
     const contactForm = document.getElementById('contact-form') || document.getElementById('contact');
     if (contactForm) {
       contactForm.scrollIntoView({ behavior: 'smooth' });
-      // Preselect service dropdown if element exists
       const serviceSelect = document.getElementById('service') as HTMLSelectElement | null;
       if (serviceSelect) {
         const optionExists = Array.from(serviceSelect.options).some(opt => opt.value === serviceTitle);
@@ -184,10 +209,14 @@ export default function ServicesSection() {
         </p>
       </div>
 
-      {/* Horizontal Carousel Container for Mobile / Responsive Grid for Desktop */}
+      {/* Horizontal Auto-Scroll Carousel Container for Mobile / Responsive Grid for Desktop */}
       <div
         ref={scrollRef}
         onScroll={handleScroll}
+        onTouchStart={() => setIsPaused(true)}
+        onTouchEnd={() => setIsPaused(false)}
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
         className="services-cards-grid"
       >
         {SERVICES_DATA.map((service, idx) => (
@@ -200,7 +229,7 @@ export default function ServicesSection() {
               <h3 className="service-card-title">{service.title}</h3>
               <p className="service-card-desc">{service.shortDesc}</p>
               
-              {/* Features List visible on desktop & expandable */}
+              {/* Features List visible on desktop */}
               <ul className="service-features-list desktop-features">
                 {service.features.slice(0, 3).map((feat, fIdx) => (
                   <li key={fIdx}>{feat}</li>

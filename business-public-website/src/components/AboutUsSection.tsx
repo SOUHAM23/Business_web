@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 export default function AboutUsSection() {
-  const [showMore, setShowMore] = useState(false);
+  const [mobileExpanded, setMobileExpanded] = useState(false);
 
   const steps = [
     { num: '1', title: 'Understand', desc: 'Financial goals, risk profile & commitments' },
@@ -19,7 +19,7 @@ export default function AboutUsSection() {
       <div className="container">
         {/* Header Badge & Title */}
         <div className="section-header">
-          <div className="trust-badge-pill">
+          <div className="trust-badge-pill" style={{ marginBottom: '1rem' }}>
             <span className="pulse-dot" />
             <span>AMFI-Registered Mutual Fund Distributor • ARN: 347438</span>
           </div>
@@ -29,7 +29,7 @@ export default function AboutUsSection() {
           </p>
         </div>
 
-        {/* Story Intro Card */}
+        {/* Story Intro Card with Full Liquid Glass Styling */}
         <div className="about-intro-card">
           <h3 className="about-card-title">
             Welcome to Sanchay Path | Sukanta Dutta (ARN: 347438)
@@ -43,47 +43,78 @@ export default function AboutUsSection() {
           </div>
         </div>
 
-        {/* Accessible Toggle Button for Progressive Disclosure */}
+        {/* Mobile-Only Toggle Button for Progressive Disclosure */}
         <div className="about-toggle-wrapper">
           <button
-            onClick={() => setShowMore(!showMore)}
-            aria-expanded={showMore}
+            onClick={() => setMobileExpanded(!mobileExpanded)}
+            aria-expanded={mobileExpanded}
             aria-controls="about-strategy-details"
             className="btn btn-outline about-toggle-btn"
           >
-            <span>{showMore ? 'Show Less Strategy Details ↑' : 'Read Our 6-Step Strategy & Advisory Process ↓'}</span>
+            <span>{mobileExpanded ? 'Hide Strategy Details ↑' : 'Read Our 6-Step Strategy & Advisory Process ↓'}</span>
           </button>
         </div>
 
-        {/* Our Approach: 6-Step Strategy Stepper (Expandable) */}
-        {showMore && (
-          <div id="about-strategy-details" className="about-strategy-wrapper">
-            <div className="strategy-header">
-              <h3 className="strategy-title">
-                Our Approach: Strategy Before Product
-              </h3>
-              <p className="strategy-subtitle">
-                We believe financial planning should begin with understanding the person—not the product. Your financial journey should be personalized—not one-size-fits-all.
-              </p>
-            </div>
+        {/* Our Approach: 6-Step Animated Strategy Flowchart Roadmap */}
+        <div
+          id="about-strategy-details"
+          className={`about-strategy-wrapper ${mobileExpanded ? 'mobile-visible' : ''}`}
+        >
+          <div className="strategy-header">
+            <span className="section-tag" style={{ margin: '0 auto 0.75rem auto' }}>
+              ⚡ Proven Advisory Roadmap
+            </span>
+            <h3 className="strategy-title">
+              Our Approach: Strategy Before Product
+            </h3>
+            <p className="strategy-subtitle">
+              We believe financial planning should begin with understanding the person—not the product. Your financial journey should be personalized—not one-size-fits-all.
+            </p>
+          </div>
 
-            <div className="strategy-steps-grid">
-              {steps.map((step) => (
-                <div key={step.num} className="strategy-step-card">
-                  <div className="step-num-badge">
-                    {step.num}
+          {/* Animated Flowchart Diagram Container */}
+          <div className="flowchart-container">
+            {/* Animated Glow Line Track */}
+            <div className="flowchart-glow-line" />
+
+            {/* Step Nodes & Cards */}
+            <div className="flowchart-steps">
+              {steps.map((step, index) => (
+                <div key={step.num} className="flowchart-step-item">
+                  {/* Node Connector Box */}
+                  <div className="flowchart-node-wrapper">
+                    <div className="flowchart-node">
+                      <span className="node-number">{step.num}</span>
+                      <div className="node-pulse-ring" />
+                    </div>
+                    {index < steps.length - 1 && (
+                      <div className="flowchart-arrow-connector">
+                        <svg
+                          className="connector-arrow-svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                      </div>
+                    )}
                   </div>
-                  <h4 className="step-card-title">
-                    {step.title}
-                  </h4>
-                  <p className="step-card-desc">
-                    {step.desc}
-                  </p>
+
+                  {/* Flowcard Content */}
+                  <div className="flowchart-card">
+                    <span className="flow-step-label">Step 0{step.num}</span>
+                    <h4 className="flow-card-title">{step.title}</h4>
+                    <p className="flow-card-desc">{step.desc}</p>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
-        )}
+        </div>
       </div>
     </section>
   );
