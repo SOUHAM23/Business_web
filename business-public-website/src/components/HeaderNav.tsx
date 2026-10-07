@@ -28,7 +28,7 @@ export default function HeaderNav() {
         <Link href="/" className="brand-link" onClick={closeMenu}>
           <div className="brand-logo-wrapper">
             <Image
-              src="/Logo.png"
+              src="/sanlogo.png"
               alt="Sanchay Path Logo"
               width={32}
               height={32}

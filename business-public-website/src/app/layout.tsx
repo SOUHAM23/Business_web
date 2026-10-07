@@ -31,9 +31,9 @@ export const metadata: Metadata = {
     "Life & Health Insurance"
   ],
   icons: {
-    icon: "/Logo.png",
-    shortcut: "/Logo.png",
-    apple: "/Logo.png",
+    icon: "/sanlogo.png",
+    shortcut: "/sanlogo.png",
+    apple: "/sanlogo.png",
   },
 };
 

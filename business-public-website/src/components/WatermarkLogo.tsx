@@ -25,7 +25,7 @@ export default function WatermarkLogo() {
   return (
     <div className="watermark-container" style={{ transform }} aria-hidden="true">
       <Image
-        src="/Logo.png"
+        src="/sanlogo.png"
         alt="Sanchay Path Watermark"
         width={800}
         height={800}
