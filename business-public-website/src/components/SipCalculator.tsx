@@ -179,7 +179,19 @@ export default function SipCalculator() {
               <span className="total-label">Total Projected Corpus</span>
               <span className="total-amount">₹{Math.round(totalValue).toLocaleString('en-IN')}</span>
             </div>
-            <a href="#contact" className="btn btn-gold-shimmer">Start This SIP Now →</a>
+            <a
+              href="#contact-form"
+              onClick={(e) => {
+                e.preventDefault();
+                const target = document.getElementById('contact-form') || document.getElementById('contact');
+                if (target) {
+                  target.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="btn btn-gold-shimmer"
+            >
+              Start This SIP Now →
+            </a>
           </div>
         </div>
       </div>

@@ -21,8 +21,7 @@ need.md
 need.txt
 whyneed.md
 whyneed.txt
-deployment.md
-deployment.txt
+
 
 # Temporary & backup artifacts
 *.log

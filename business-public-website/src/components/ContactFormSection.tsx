@@ -102,7 +102,7 @@ export default function ContactFormSection() {
             <div style={{ display: 'flex', gap: '0.85rem', flexWrap: 'wrap' }}>
               <div className="contact-chip">
                 <span>📞 Mobile:</span>
-                <a href="tel:+919876543210">+91 98765 43210</a>
+                <a href="tel:+918910464642">+91 89104 64642</a>
               </div>
               <div className="contact-chip">
                 <span>✉️ Email:</span>
@@ -114,7 +114,7 @@ export default function ContactFormSection() {
 
         {/* Right Side: Form Card */}
         <div className="contact-form-column">
-          <div className="form-card-wrapper">
+          <div className="form-card-wrapper" id="contact-form">
             <h3 className="form-heading">Book Confidential Consultation</h3>
             <p className="form-subheading">Fill in your details for a call from an advisor within 24 hours.</p>
 
@@ -152,7 +152,7 @@ export default function ContactFormSection() {
                   required
                   maxLength={10}
                   pattern="[0-9]{10}"
-                  placeholder="e.g. 9876543210"
+                  placeholder="e.g. 8910464642"
                   value={formData.phone}
                   onChange={(e) => {
                     const numericValue = e.target.value.replace(/\D/g, '').slice(0, 10);
@@ -161,7 +161,6 @@ export default function ContactFormSection() {
                   className="input-control"
                 />
               </div>
-
 
               <div className="form-field-group">
                 <label htmlFor="email">Email Address (Optional)</label>
@@ -186,8 +185,12 @@ export default function ContactFormSection() {
                   <option value="SIP & Mutual Funds">SIP & Mutual Funds</option>
                   <option value="Insurance Solutions">Insurance Solutions</option>
                   <option value="Loans & Credit Advisory">Loans & Credit Advisory</option>
-                  <option value="Retirement & Wealth Management">Retirement & Wealth Management</option>
-                  <option value="General Enquiry">General Advisory Enquiry</option>
+                  <option value="Retirement Planning">Retirement Planning</option>
+                  <option value="Portfolio Management (PMS / AIF)">Portfolio Management (PMS / AIF)</option>
+                  <option value="Child Education & Marriage Fund">Child Education & Marriage Fund</option>
+                  <option value="Tax Planning & ELSS">Tax Planning & ELSS</option>
+                  <option value="Corporate Treasury & Group Cover">Corporate Treasury & Group Cover</option>
+                  <option value="General Advisory Enquiry">General Advisory Enquiry</option>
                 </select>
               </div>
 

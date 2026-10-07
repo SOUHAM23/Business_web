@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import HeaderNav from '@/components/HeaderNav';
 import HeroPortrait from '@/components/HeroPortrait';
@@ -5,7 +7,7 @@ import SipCalculator from '@/components/SipCalculator';
 import ContactFormSection from '@/components/ContactFormSection';
 import FounderVisionSection from '@/components/FounderVisionSection';
 import AboutUsSection from '@/components/AboutUsSection';
-import Link from 'next/link';
+import ScrollToTopButton from '@/components/ScrollToTopButton';
 
 export default function Home() {
   const currentYear = new Date().getFullYear();
@@ -14,7 +16,7 @@ export default function Home() {
     <>
       {/* Floating WhatsApp Quick Action Button */}
       <a
-        href="https://wa.me/919876543210?text=Hello%20Sanchay%20Path!%20I%20would%20like%20to%20know%20more%20about%20your%20financial%20advisory%20services."
+        href="https://wa.me/918910464642?text=Hello%20Sanchay%20Path!%20I%20would%20like%20to%20know%20more%20about%20your%20financial%20advisory%20services."
         target="_blank"
         rel="noopener noreferrer"
         className="floating-whatsapp"
@@ -22,6 +24,9 @@ export default function Home() {
       >
         💬
       </a>
+
+      {/* Floating Scroll To Top Button */}
+      <ScrollToTopButton />
 
       {/* Responsive Header Navigation */}
       <HeaderNav />
@@ -43,7 +48,14 @@ export default function Home() {
               </p>
 
               <div className="hero-cta-group">
-                <a href="#contact" className="btn btn-gold-solid">
+                <a
+                  href="#contact-form"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="btn btn-gold-solid"
+                >
                   Schedule Free Consultation →
                 </a>
                 <a href="#calculator" className="btn btn-outline">
@@ -63,11 +75,11 @@ export default function Home() {
               <span className="stat-label">Years Financial Experience</span>
             </div>
             <div className="stat-item">
-              <span className="stat-number">₹500Cr+</span>
+              <span className="stat-number">₹10Cr+</span>
               <span className="stat-label">Assets Under Management</span>
             </div>
             <div className="stat-item">
-              <span className="stat-number">10,000+</span>
+              <span className="stat-number">500+</span>
               <span className="stat-label">Satisfied Client Families</span>
             </div>
             <div className="stat-item">
@@ -88,7 +100,8 @@ export default function Home() {
           </div>
 
           <div className="services-cards-grid">
-            <div className="service-card-item">
+            {/* Service 1 */}
+            <div className="service-card-item service-card-1">
               <div>
                 <div className="service-icon-box">📈</div>
                 <h3 className="service-card-title">SIP & Mutual Funds</h3>
@@ -101,10 +114,21 @@ export default function Home() {
                   <li>Regular portfolio rebalancing</li>
                 </ul>
               </div>
-              <a href="#contact" className="btn btn-outline" style={{ fontSize: '0.85rem' }}>Explore Mutual Funds</a>
+              <a
+                href="#contact-form"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="btn btn-outline"
+                style={{ fontSize: '0.85rem' }}
+              >
+                Explore Mutual Funds
+              </a>
             </div>
 
-            <div className="service-card-item">
+            {/* Service 2 */}
+            <div className="service-card-item service-card-2">
               <div>
                 <div className="service-icon-box">🛡️</div>
                 <h3 className="service-card-title">Insurance Solutions</h3>
@@ -117,10 +141,21 @@ export default function Home() {
                   <li>Critical illness protection</li>
                 </ul>
               </div>
-              <a href="#contact" className="btn btn-outline" style={{ fontSize: '0.85rem' }}>Get Protection Plan</a>
+              <a
+                href="#contact-form"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="btn btn-outline"
+                style={{ fontSize: '0.85rem' }}
+              >
+                Get Protection Plan
+              </a>
             </div>
 
-            <div className="service-card-item">
+            {/* Service 3 */}
+            <div className="service-card-item service-card-3">
               <div>
                 <div className="service-icon-box">🏦</div>
                 <h3 className="service-card-title">Loans & Credit Advisory</h3>
@@ -133,10 +168,21 @@ export default function Home() {
                   <li>Debt restructuring guidance</li>
                 </ul>
               </div>
-              <a href="#contact" className="btn btn-outline" style={{ fontSize: '0.85rem' }}>Consult Loan Advisor</a>
+              <a
+                href="#contact-form"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="btn btn-outline"
+                style={{ fontSize: '0.85rem' }}
+              >
+                Consult Loan Advisor
+              </a>
             </div>
 
-            <div className="service-card-item">
+            {/* Service 4 */}
+            <div className="service-card-item service-card-4">
               <div>
                 <div className="service-icon-box">🏖️</div>
                 <h3 className="service-card-title">Retirement Planning</h3>
@@ -149,7 +195,125 @@ export default function Home() {
                   <li>Wealth preservation framework</li>
                 </ul>
               </div>
-              <a href="#contact" className="btn btn-outline" style={{ fontSize: '0.85rem' }}>Plan Retirement</a>
+              <a
+                href="#contact-form"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="btn btn-outline"
+                style={{ fontSize: '0.85rem' }}
+              >
+                Plan Retirement
+              </a>
+            </div>
+
+            {/* Service 5 */}
+            <div className="service-card-item service-card-5">
+              <div>
+                <div className="service-icon-box">💼</div>
+                <h3 className="service-card-title">Portfolio Management (PMS/AIF)</h3>
+                <p className="service-card-desc">
+                  Dedicated high-net-worth portfolio management, specialized PMS schemes, and alternative assets.
+                </p>
+                <ul className="service-features-list">
+                  <li>Customized HNI portfolios</li>
+                  <li>Alternative investment funds</li>
+                  <li>Direct stock & sector focus</li>
+                </ul>
+              </div>
+              <a
+                href="#contact-form"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="btn btn-outline"
+                style={{ fontSize: '0.85rem' }}
+              >
+                Explore PMS / AIF
+              </a>
+            </div>
+
+            {/* Service 6 */}
+            <div className="service-card-item service-card-6">
+              <div>
+                <div className="service-icon-box">🎓</div>
+                <h3 className="service-card-title">Child Education & Marriage Fund</h3>
+                <p className="service-card-desc">
+                  Targeted long-term wealth compounding for child future higher education and life milestones.
+                </p>
+                <ul className="service-features-list">
+                  <li>Inflation-adjusted target planning</li>
+                  <li>Milestone-based fund lock-in</li>
+                  <li>Secure corpus creation</li>
+                </ul>
+              </div>
+              <a
+                href="#contact-form"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="btn btn-outline"
+                style={{ fontSize: '0.85rem' }}
+              >
+                Plan Child Future
+              </a>
+            </div>
+
+            {/* Service 7 */}
+            <div className="service-card-item service-card-7">
+              <div>
+                <div className="service-icon-box">📊</div>
+                <h3 className="service-card-title">Tax Planning & ELSS</h3>
+                <p className="service-card-desc">
+                  Section 80C tax-saving mutual funds combined with capital gain tax minimization strategies.
+                </p>
+                <ul className="service-features-list">
+                  <li>ELSS tax-saver schemes</li>
+                  <li>Shortest 3-year lock-in option</li>
+                  <li>Capital gains harvesting</li>
+                </ul>
+              </div>
+              <a
+                href="#contact-form"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="btn btn-outline"
+                style={{ fontSize: '0.85rem' }}
+              >
+                Save Taxes Now
+              </a>
+            </div>
+
+            {/* Service 8 */}
+            <div className="service-card-item service-card-8">
+              <div>
+                <div className="service-icon-box">🏢</div>
+                <h3 className="service-card-title">Corporate Treasury & Group Cover</h3>
+                <p className="service-card-desc">
+                  Custom corporate surplus cash management, employee gratuity funds & group mediclaim protection.
+                </p>
+                <ul className="service-features-list">
+                  <li>Corporate liquid fund management</li>
+                  <li>Group health & life policies</li>
+                  <li>Executive wealth retention</li>
+                </ul>
+              </div>
+              <a
+                href="#contact-form"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="btn btn-outline"
+                style={{ fontSize: '0.85rem' }}
+              >
+                Corporate Advisory
+              </a>
             </div>
           </div>
         </section>

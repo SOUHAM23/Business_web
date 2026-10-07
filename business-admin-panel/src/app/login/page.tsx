@@ -12,10 +12,17 @@ export default function AdminLoginPage() {
       setStatus('loading');
       setErrorMsg('');
       const supabase = getSupabaseAuthClient();
+
+      const origin = typeof window !== 'undefined' ? window.location.origin : '';
+      const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
+      const isSubPath = pathname.startsWith('/admin');
+      const targetPath = isSubPath ? '/admin/dashboard' : '/dashboard';
+      const redirectUrl = origin ? `${origin}${targetPath}` : 'http://localhost:3001/dashboard';
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/dashboard`,
+          redirectTo: redirectUrl,
           scopes: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets',
           queryParams: {
             access_type: 'offline',
@@ -23,6 +30,7 @@ export default function AdminLoginPage() {
           },
         },
       });
+
 
       if (error) {
         setStatus('error');

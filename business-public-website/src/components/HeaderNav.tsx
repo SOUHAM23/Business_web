@@ -44,7 +44,15 @@ export default function HeaderNav() {
 
           <ThemeToggle />
 
-          <a href="#contact" className="btn btn-gold-solid desktop-cta" onClick={closeMenu}>
+          <a
+            href="#contact-form"
+            className="btn btn-gold-solid desktop-cta"
+            onClick={(e) => {
+              closeMenu();
+              e.preventDefault();
+              document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
             Book Call
           </a>
 
@@ -86,10 +94,26 @@ export default function HeaderNav() {
             <Link href="#why-us" className="mobile-nav-item" onClick={closeMenu}>
               <span>🎯</span> 6-Step Strategy & Vision
             </Link>
-            <Link href="#contact" className="mobile-nav-item" onClick={closeMenu}>
+            <a
+              href="#contact-form"
+              className="mobile-nav-item"
+              onClick={(e) => {
+                closeMenu();
+                e.preventDefault();
+                document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
               <span>📞</span> Direct Consultation
-            </Link>
-            <a href="#contact" className="btn btn-gold-solid mobile-menu-cta" onClick={closeMenu}>
+            </a>
+            <a
+              href="#contact-form"
+              className="btn btn-gold-solid mobile-menu-cta"
+              onClick={(e) => {
+                closeMenu();
+                e.preventDefault();
+                document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
               Schedule Free Consultation →
             </a>
           </nav>

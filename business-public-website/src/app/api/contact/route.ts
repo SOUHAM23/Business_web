@@ -8,13 +8,7 @@ const contactFormSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(100),
   phone: z.string().min(10, 'Phone number must be at least 10 digits').max(15),
   email: z.string().email('Invalid email address').optional().or(z.literal('')),
-  service: z.enum([
-    'SIP & Mutual Funds',
-    'Insurance Solutions',
-    'Loans & Credit Advisory',
-    'Retirement & Wealth Management',
-    'General Enquiry',
-  ]),
+  service: z.string().min(1, 'Please select a service category'),
   message: z.string().max(1000, 'Message cannot exceed 1000 characters').optional(),
 });
 
