@@ -1605,10 +1605,9 @@ h1, h2, h3, h4, h5 {
   font-weight: 600;
 }
 
-.about-toggle-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1.5rem;
+.about-toggle-wrapper,
+.mobile-only-toggle {
+  display: none !important;
 }
 
 .about-toggle-btn {
@@ -1628,6 +1627,7 @@ h1, h2, h3, h4, h5 {
 .about-strategy-wrapper {
   margin-top: 1.5rem;
   animation: fadeIn 0.4s ease;
+  display: block !important;
 }
 
 .strategy-header {
@@ -1871,6 +1871,22 @@ h1, h2, h3, h4, h5 {
 
 /* MOBILE RESPONSIVE FLOWCHART (max-width: 992px) */
 @media (max-width: 992px) {
+  .about-toggle-wrapper,
+  .mobile-only-toggle {
+    display: flex !important;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .about-strategy-wrapper {
+    display: none !important;
+  }
+
+  .about-strategy-wrapper.mobile-visible {
+    display: block !important;
+    animation: fadeIn 0.35s ease;
+  }
+
   .desktop-only-arrow {
     display: none !important;
   }

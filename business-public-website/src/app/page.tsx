@@ -112,11 +112,18 @@ export default function Home() {
         {/* Service Locations & Advisory Contact Banner */}
         <section style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-card)', borderRadius: 'var(--radius-xl)', padding: '2rem', margin: '3rem 0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem', backdropFilter: 'blur(20px)' }}>
           <div>
-            <h4 style={{ color: 'var(--accent-gold)', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 700 }}>📍 Office Address & Service Region</h4>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: '1.5' }}>
-              <strong>House of PADA Sova</strong>, Uttar Kowgachi Feeder Road, Shyamnagar, North 24 Parganas, West Bengal, Pin-743127<br />
-              <span style={{ fontSize: '0.85rem', color: 'var(--accent-gold)' }}>Serving Barrackpore Sub-Division & Globally 🌐</span>
-            </p>
+            <a
+              href="https://maps.app.goo.gl/GfvnXzcKhiHrCjuK8?g_st=aw"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
+            >
+              <h4 style={{ color: 'var(--accent-gold)', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 700 }}>📍 Office Address & Service Region (View Location ↗)</h4>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: '1.5' }}>
+                <strong>House of PADA Sova</strong>, Uttar Kowgachi Feeder Road, Shyamnagar, North 24 Parganas, West Bengal, Pin-743127<br />
+                <span style={{ fontSize: '0.85rem', color: 'var(--accent-gold)', fontWeight: 600 }}>Serving Barrackpore Sub-Division & Globally 🌐</span>
+              </p>
+            </a>
           </div>
 
 
