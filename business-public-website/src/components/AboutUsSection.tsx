@@ -37,14 +37,20 @@ export default function AboutUsSection() {
           <p className="about-intro-text">
             At Sanchay Path, we help individuals and families make informed, disciplined, and goal-oriented financial decisions. With <strong>15+ years of experience in Banking & Financial Services</strong>, we focus on helping clients plan for their important life milestones through a structured, transparent approach to Mutual Funds & SIPs, Goal-Based Financial Planning, Retirement Planning, Life Insurance, Health Insurance, and Family Protection.
           </p>
-          <div className="about-location-pill">
+          <a
+            href="https://maps.app.goo.gl/GfvnXzcKhiHrCjuK8?g_st=aw"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="about-location-pill"
+            style={{ textDecoration: 'none' }}
+          >
             <span>📍</span>
-            <span>Serving Clients from Barrackpore Sub-Division, West Bengal, India & Globally 🌐</span>
-          </div>
+            <span>Serving Clients from Barrackpore Sub-Division, West Bengal, India & Globally (View Location ↗)</span>
+          </a>
         </div>
 
         {/* Mobile-Only Toggle Button for Progressive Disclosure */}
-        <div className="about-toggle-wrapper">
+        <div className="about-toggle-wrapper mobile-only-toggle">
           <button
             onClick={() => setMobileExpanded(!mobileExpanded)}
             aria-expanded={mobileExpanded}

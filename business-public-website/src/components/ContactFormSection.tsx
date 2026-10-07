@@ -93,12 +93,18 @@ export default function ContactFormSection() {
           </div>
 
           <div className="direct-contact-bar" style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', width: '100%', maxWidth: '100%' }}>
-            <div className="contact-chip" style={{ fontSize: '0.85rem', display: 'flex', flexWrap: 'wrap', whiteSpace: 'normal', wordBreak: 'break-word', width: '100%' }}>
+            <a
+              href="https://maps.app.goo.gl/GfvnXzcKhiHrCjuK8?g_st=aw"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-chip location-contact-link"
+              style={{ fontSize: '0.85rem', display: 'flex', flexWrap: 'wrap', whiteSpace: 'normal', wordBreak: 'break-word', width: '100%', textDecoration: 'none' }}
+            >
               <span>📍 Office Address:</span>
-              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
-                House of PADA Sova, Uttar Kowgachi Feeder Road, Shyamnagar, North 24 Parganas, West Bengal, Pin-743127
+              <span style={{ color: 'var(--accent-gold)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                House of PADA Sova, Uttar Kowgachi Feeder Road, Shyamnagar, North 24 Parganas, West Bengal, Pin-743127 ↗
               </span>
-            </div>
+            </a>
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', width: '100%' }}>
               <div className="contact-chip">
                 <span>📞 Mobile:</span>

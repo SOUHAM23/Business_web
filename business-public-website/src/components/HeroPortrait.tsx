@@ -54,10 +54,21 @@ export default function HeroPortrait() {
           ))}
         </div>
 
-        {/* Floating High-Contrast Advisor Name Badge */}
+        {/* Floating Glassmorphic Executive Advisor Credential Badge */}
         <div className="portrait-floating-badge">
-          <span className="badge-title">{PROFILE_IMAGES[activeIdx].caption}</span>
-          <span className="badge-subtitle">{PROFILE_IMAGES[activeIdx].sub}</span>
+          <div className="badge-icon-shield">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+          </div>
+          <div className="badge-text-group">
+            <span className="badge-title">{PROFILE_IMAGES[activeIdx].caption}</span>
+            <span className="badge-subtitle">{PROFILE_IMAGES[activeIdx].sub}</span>
+          </div>
+          <div className="badge-verified-tag">
+            <span>VERIFIED</span>
+          </div>
         </div>
       </div>
     </div>
