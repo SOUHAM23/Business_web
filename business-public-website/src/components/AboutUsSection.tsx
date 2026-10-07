@@ -74,23 +74,52 @@ export default function AboutUsSection() {
 
           {/* Animated Flowchart Diagram Container */}
           <div className="flowchart-container">
-            {/* Animated Glow Line Track */}
+            {/* Animated Glow Line Track (Desktop) */}
             <div className="flowchart-glow-line" />
 
-            {/* Step Nodes & Cards */}
+            {/* Step Nodes, Cards & Connectors */}
             <div className="flowchart-steps">
               {steps.map((step, index) => (
-                <div key={step.num} className="flowchart-step-item">
-                  {/* Node Connector Box */}
-                  <div className="flowchart-node-wrapper">
-                    <div className="flowchart-node">
-                      <span className="node-number">{step.num}</span>
-                      <div className="node-pulse-ring" />
+                <div key={step.num} className="flowchart-step-wrapper">
+                  <div className="flowchart-step-item">
+                    {/* Node Circle */}
+                    <div className="flowchart-node-wrapper">
+                      <div className="flowchart-node">
+                        <span className="node-number">{step.num}</span>
+                        <div className="node-pulse-ring" />
+                      </div>
+                      {index < steps.length - 1 && (
+                        <div className="flowchart-arrow-connector desktop-only-arrow">
+                          <svg
+                            className="connector-arrow-svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="9 18 15 12 9 6" />
+                          </svg>
+                        </div>
+                      )}
                     </div>
-                    {index < steps.length - 1 && (
-                      <div className="flowchart-arrow-connector">
+
+                    {/* Flowcard Content */}
+                    <div className="flowchart-card">
+                      <span className="flow-step-label">Step 0{step.num}</span>
+                      <h4 className="flow-card-title">{step.title}</h4>
+                      <p className="flow-card-desc">{step.desc}</p>
+                    </div>
+                  </div>
+
+                  {/* Vertical Mobile Downward Connecting Stem */}
+                  {index < steps.length - 1 && (
+                    <div className="flowchart-vertical-connector mobile-only-connector">
+                      <div className="flow-stem-line" />
+                      <div className="flow-stem-arrow">
                         <svg
-                          className="connector-arrow-svg"
+                          className="stem-arrow-svg"
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"
@@ -98,18 +127,11 @@ export default function AboutUsSection() {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                         >
-                          <polyline points="9 18 15 12 9 6" />
+                          <polyline points="6 9 12 15 18 9" />
                         </svg>
                       </div>
-                    )}
-                  </div>
-
-                  {/* Flowcard Content */}
-                  <div className="flowchart-card">
-                    <span className="flow-step-label">Step 0{step.num}</span>
-                    <h4 className="flow-card-title">{step.title}</h4>
-                    <p className="flow-card-desc">{step.desc}</p>
-                  </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
