@@ -30,8 +30,8 @@ export default function HeaderNav() {
             <Image
               src="/sanlogo.png"
               alt="Sanchay Path Logo"
-              width={32}
-              height={32}
+              width={42}
+              height={42}
               className="brand-logo-img"
             />
           </div>
