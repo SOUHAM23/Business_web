@@ -1514,3 +1514,399 @@ h1, h2, h3, h4, h5 {
   color: var(--text-secondary);
   font-size: 0.85rem;
 }
+
+/* ================================================== */
+/* COMPREHENSIVE MOBILE OPTIMIZATION (360px - 768px) */
+/* ================================================== */
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .section-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.4rem, 5.2vw, 1.85rem);
+    line-height: 1.25;
+    margin-bottom: 0.35rem;
+  }
+
+  .section-subtitle {
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+
+  /* Hero Section Mobile Optimization */
+  .hero-section {
+    padding: 1rem 0 1.5rem;
+  }
+
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    text-align: center;
+    padding-bottom: 1rem;
+  }
+
+  .hero-main-title {
+    font-size: clamp(1.8rem, 6.5vw, 2.3rem);
+    line-height: 1.18;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-subtext {
+    font-size: 0.92rem;
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+  }
+
+  .hero-cta-group {
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .hero-cta-group .btn {
+    width: 100%;
+    min-height: 44px;
+    font-size: 0.9rem;
+    padding: 0.65rem 1.2rem;
+  }
+
+  .hero-portrait-wrapper {
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-portrait-frame {
+    max-width: 250px;
+    padding-bottom: 0.5rem;
+  }
+
+  .portrait-image-stack {
+    height: 240px;
+  }
+
+  .portrait-floating-badge {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 1.1rem;
+    max-width: 95%;
+  }
+
+  .badge-title {
+    font-size: 0.95rem;
+  }
+
+  .badge-subtitle {
+    font-size: 0.78rem;
+  }
+
+  /* Statistics Section Compact 2-Column Grid */
+  .stats-banner {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.65rem;
+    padding: 0.85rem 0.75rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .stat-item {
+    padding: 0.35rem 0.25rem;
+  }
+
+  .stat-number {
+    font-size: clamp(1.35rem, 4.5vw, 1.65rem);
+    line-height: 1.1;
+    margin-bottom: 2px;
+  }
+
+  .stat-label {
+    font-size: 0.74rem;
+    line-height: 1.2;
+    font-weight: 500;
+  }
+
+  /* About Us Section & 6-Step Strategy 2-Column Mobile Grid */
+  .about-section {
+    padding: 2rem 0;
+  }
+
+  .about-intro-card {
+    padding: 1.25rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .about-card-title {
+    font-size: 1.2rem;
+    line-height: 1.3;
+    margin-bottom: 0.65rem;
+  }
+
+  .about-intro-text {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .about-location-pill {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.78rem;
+  }
+
+  .about-toggle-btn {
+    min-height: 44px;
+    font-size: 0.85rem;
+    padding: 0.55rem 1.2rem;
+  }
+
+  .strategy-steps-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .strategy-step-card {
+    padding: 1rem 0.75rem;
+    border-radius: var(--radius-md);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-card);
+    text-align: center;
+  }
+
+  .step-num-badge {
+    width: 30px;
+    height: 30px;
+    font-size: 0.85rem;
+    margin: 0 auto 0.5rem;
+    border-radius: 50%;
+    background: var(--grad-gold);
+    color: #0f172a;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .step-card-title {
+    font-size: 0.92rem;
+    margin-bottom: 0.25rem;
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+
+  .step-card-desc {
+    font-size: 0.76rem;
+    line-height: 1.35;
+    color: var(--text-muted);
+  }
+
+  /* Core Wealth Solutions Horizontal Touch Carousel */
+  .services-cards-grid {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 0.85rem;
+    padding: 0.5rem 0.25rem 1.25rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .services-cards-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .service-card-item {
+    flex: 0 0 82vw;
+    max-width: 310px;
+    min-width: 250px;
+    scroll-snap-align: start;
+    padding: 1.25rem 1rem;
+    border-radius: var(--radius-lg);
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .desktop-features {
+    display: none;
+  }
+
+  .service-icon-box {
+    width: 44px;
+    height: 44px;
+    font-size: 1.3rem;
+    margin-bottom: 0.65rem;
+    border-radius: var(--radius-md);
+  }
+
+  .service-card-title {
+    font-size: 1.08rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .service-card-desc {
+    font-size: 0.82rem;
+    line-height: 1.45;
+    margin-bottom: 0.85rem;
+  }
+
+  .service-btn {
+    width: 100%;
+    min-height: 40px;
+    font-size: 0.82rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .carousel-dots-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: 0.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.25);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .carousel-dot.dot-active {
+    width: 22px;
+    background: var(--accent-gold);
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+  }
+
+  /* Why Choose / Founder Vision 2-Column Mobile Features */
+  .founder-story-card {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding: 1.25rem 1rem;
+    margin-top: 1rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .founder-portrait-frame {
+    max-width: 210px;
+    height: auto;
+  }
+
+  .founder-story-heading {
+    font-size: 1.1rem;
+    line-height: 1.35;
+    margin-bottom: 0.65rem;
+  }
+
+  .founder-story-text {
+    font-size: 0.86rem;
+    line-height: 1.55;
+    margin-bottom: 1rem;
+  }
+
+  .why-us-features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.65rem;
+  }
+
+  .why-us-feature-box {
+    padding: 0.65rem 0.75rem;
+    flex-direction: column;
+    gap: 0.35rem;
+    text-align: left;
+    border-radius: var(--radius-md);
+  }
+
+  .why-us-feature-box strong {
+    font-size: 0.82rem;
+  }
+
+  .why-us-feature-box p {
+    font-size: 0.74rem;
+    line-height: 1.3;
+  }
+
+  /* SIP Calculator Mobile Optimization */
+  .sip-calculator-wrapper {
+    padding: 1.25rem 1rem;
+    margin: 1.75rem 0;
+    border-radius: var(--radius-lg);
+  }
+
+  .calc-main-heading {
+    font-size: 1.3rem;
+    line-height: 1.25;
+  }
+
+  .calc-sub-heading {
+    font-size: 0.84rem;
+    line-height: 1.45;
+  }
+
+  .calc-controls-col {
+    gap: 1.25rem;
+  }
+
+  .slider-group {
+    gap: 0.35rem;
+  }
+
+  .slider-label-title {
+    font-size: 0.82rem;
+  }
+
+  .slider-value-display {
+    font-size: 0.98rem;
+  }
+
+  .pie-chart-container {
+    width: 150px;
+    height: 150px;
+  }
+
+  .pie-center-val {
+    font-size: 1.15rem;
+  }
+
+  .total-portfolio-banner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .total-amount {
+    font-size: 1.35rem;
+  }
+
+  /* Floating Actions Safe Insets */
+  .floating-whatsapp {
+    position: fixed;
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    right: 14px;
+    z-index: 9999;
+    width: 46px;
+    height: 46px;
+    font-size: 1.4rem;
+  }
+
+  .scroll-to-top-btn {
+    position: fixed;
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    left: 14px;
+    z-index: 9998;
+    width: 44px;
+    height: 44px;
+  }
+}

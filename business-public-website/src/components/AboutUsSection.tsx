@@ -15,73 +15,41 @@ export default function AboutUsSection() {
   ];
 
   return (
-    <section id="about" style={{ padding: '4rem 0', background: 'var(--bg-surface-secondary)' }}>
+    <section id="about" className="about-section">
       <div className="container">
         {/* Header Badge & Title */}
         <div className="section-header">
-          <div className="trust-badge-pill" style={{ marginBottom: '1rem' }}>
+          <div className="trust-badge-pill">
             <span className="pulse-dot" />
             <span>AMFI-Registered Mutual Fund Distributor • ARN: 347438</span>
           </div>
           <h2 className="section-title">About Sanchay Path</h2>
-          <p className="section-subtitle" style={{ fontSize: '1.15rem', color: 'var(--accent-gold)', fontWeight: 600 }}>
+          <p className="section-subtitle bengali-subtitle">
             সমৃদ্ধির নতুন দিশারি
           </p>
         </div>
 
         {/* Story Intro Card */}
-        <div
-          style={{
-            background: 'var(--bg-surface)',
-            border: '1px solid var(--border-card)',
-            borderRadius: 'var(--radius-xl)',
-            padding: 'clamp(1.5rem, 4vw, 2.5rem)',
-            marginBottom: '1.5rem',
-            backdropFilter: 'blur(20px)',
-            boxShadow: 'var(--shadow-card)',
-          }}
-        >
-          <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '1rem' }}>
+        <div className="about-intro-card">
+          <h3 className="about-card-title">
             Welcome to Sanchay Path | Sukanta Dutta (ARN: 347438)
           </h3>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '1.02rem', lineHeight: '1.75', marginBottom: '1.25rem' }}>
+          <p className="about-intro-text">
             At Sanchay Path, we help individuals and families make informed, disciplined, and goal-oriented financial decisions. With <strong>15+ years of experience in Banking & Financial Services</strong>, we focus on helping clients plan for their important life milestones through a structured, transparent approach to Mutual Funds & SIPs, Goal-Based Financial Planning, Retirement Planning, Life Insurance, Health Insurance, and Family Protection.
           </p>
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.6rem',
-              background: 'rgba(245, 158, 11, 0.1)',
-              border: '1px solid var(--border-glow)',
-              padding: '0.6rem 1.2rem',
-              borderRadius: '30px',
-              fontSize: '0.88rem',
-              color: 'var(--accent-gold)',
-              fontWeight: 600,
-            }}
-          >
+          <div className="about-location-pill">
             <span>📍</span>
             <span>Serving Clients from Barrackpore Sub-Division, West Bengal, India & Globally 🌐</span>
           </div>
         </div>
 
-        {/* Toggle Arrow Button for Expand/Collapse */}
-        <div style={{ textAlign: 'center', margin: '1.5rem 0' }}>
+        {/* Accessible Toggle Button for Progressive Disclosure */}
+        <div className="about-toggle-wrapper">
           <button
             onClick={() => setShowMore(!showMore)}
-            className="btn btn-outline"
-            style={{
-              borderRadius: '30px',
-              padding: '0.65rem 1.6rem',
-              fontSize: '0.92rem',
-              fontWeight: 600,
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              boxShadow: 'var(--shadow-card)',
-              cursor: 'pointer',
-            }}
+            aria-expanded={showMore}
+            aria-controls="about-strategy-details"
+            className="btn btn-outline about-toggle-btn"
           >
             <span>{showMore ? 'Show Less Strategy Details ↑' : 'Read Our 6-Step Strategy & Advisory Process ↓'}</span>
           </button>
@@ -89,58 +57,26 @@ export default function AboutUsSection() {
 
         {/* Our Approach: 6-Step Strategy Stepper (Expandable) */}
         {showMore && (
-          <div style={{ marginTop: '2rem', animation: 'fadeIn 0.35s ease' }}>
-            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-              <h3 style={{ fontSize: '1.6rem', fontWeight: 700, marginBottom: '0.5rem' }}>
+          <div id="about-strategy-details" className="about-strategy-wrapper">
+            <div className="strategy-header">
+              <h3 className="strategy-title">
                 Our Approach: Strategy Before Product
               </h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', maxWidth: '650px', margin: '0 auto' }}>
+              <p className="strategy-subtitle">
                 We believe financial planning should begin with understanding the person—not the product. Your financial journey should be personalized—not one-size-fits-all.
               </p>
             </div>
 
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
-                gap: '1.25rem',
-              }}
-            >
+            <div className="strategy-steps-grid">
               {steps.map((step) => (
-                <div
-                  key={step.num}
-                  style={{
-                    background: 'var(--bg-surface)',
-                    border: '1px solid var(--border-card)',
-                    borderRadius: 'var(--radius-lg)',
-                    padding: '1.25rem 1rem',
-                    textAlign: 'center',
-                    position: 'relative',
-                    transition: 'var(--transition)',
-                  }}
-                >
-                  <div
-                    style={{
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '50%',
-                      background: 'var(--grad-gold)',
-                      color: '#0f172a',
-                      fontWeight: 800,
-                      fontSize: '1rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      margin: '0 auto 0.85rem',
-                      boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)',
-                    }}
-                  >
+                <div key={step.num} className="strategy-step-card">
+                  <div className="step-num-badge">
                     {step.num}
                   </div>
-                  <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.3rem' }}>
+                  <h4 className="step-card-title">
                     {step.title}
                   </h4>
-                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0, lineHeight: '1.4' }}>
+                  <p className="step-card-desc">
                     {step.desc}
                   </p>
                 </div>
@@ -152,4 +88,3 @@ export default function AboutUsSection() {
     </section>
   );
 }
-

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import ThemeToggle from './ThemeToggle';
@@ -9,6 +9,18 @@ export default function HeaderNav() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const closeMenu = () => setMobileMenuOpen(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeMenu();
+      }
+    };
+    if (mobileMenuOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mobileMenuOpen]);
 
   return (
     <header className="header">
@@ -60,15 +72,17 @@ export default function HeaderNav() {
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="mobile-hamburger-btn"
-            aria-label="Toggle Mobile Navigation"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-menu-drawer"
+            aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
           >
             {mobileMenuOpen ? (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             ) : (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="4" y1="6" x2="20" y2="6" />
                 <line x1="4" y1="12" x2="20" y2="12" />
                 <line x1="4" y1="18" x2="20" y2="18" />
@@ -80,19 +94,19 @@ export default function HeaderNav() {
 
       {/* Mobile Slide-Down Menu Overlay */}
       {mobileMenuOpen && (
-        <div className="mobile-menu-overlay">
+        <div id="mobile-menu-drawer" className="mobile-menu-overlay">
           <nav className="mobile-nav-links">
             <Link href="#about" className="mobile-nav-item" onClick={closeMenu}>
-              <span>👤</span> About Sukanta Dutta
+              <span>About Sukanta Dutta</span>
             </Link>
             <Link href="#services" className="mobile-nav-item" onClick={closeMenu}>
-              <span>💼</span> Core Advisory Services
+              <span>Core Advisory Services</span>
             </Link>
             <Link href="#calculator" className="mobile-nav-item" onClick={closeMenu}>
-              <span>📈</span> Goal SIP Calculator
+              <span>Goal SIP Calculator</span>
             </Link>
             <Link href="#why-us" className="mobile-nav-item" onClick={closeMenu}>
-              <span>🎯</span> 6-Step Strategy & Vision
+              <span>6-Step Strategy & Vision</span>
             </Link>
             <a
               href="#contact-form"
@@ -103,7 +117,7 @@ export default function HeaderNav() {
                 document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
               }}
             >
-              <span>📞</span> Direct Consultation
+              <span>Direct Consultation</span>
             </a>
             <a
               href="#contact-form"
@@ -122,4 +136,3 @@ export default function HeaderNav() {
     </header>
   );
 }
-
