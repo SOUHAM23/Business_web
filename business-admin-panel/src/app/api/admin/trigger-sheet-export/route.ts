@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createGoogleJwt } from '@/lib/googleJwt';
-import { autoProvisionUserDrive, syncLeadsToUserSheet } from '@/lib/googleDriveUserSync';
+import { autoProvisionUserDrive, syncLeadsToUserSheet, formatGoogleSheet } from '@/lib/googleDriveUserSync';
 
 export async function POST(req: NextRequest) {
   try {
@@ -124,6 +124,9 @@ export async function POST(req: NextRequest) {
       });
       return NextResponse.json({ success: false, error: errText }, { status: 500 });
     }
+
+    // Apply beautiful formatting to Service Account sheet as well
+    await formatGoogleSheet(accessToken, spreadsheetId, rows.length);
 
     const exportRecord = await prisma.sheetExport.create({
       data: {
