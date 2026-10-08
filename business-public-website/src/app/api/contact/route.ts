@@ -78,8 +78,30 @@ export async function POST(req: NextRequest) {
         service: service,
         message: cleanMessage || `Enquiry from website contact form for ${service}`,
         status: 'NEW',
-      },
+        syncedToSheet: false,
+      } as any,
     });
+
+    // Check count of pending unsynced enquiries in Supabase
+    try {
+      const pendingCount = await prisma.enquiry.count({
+        where: { syncedToSheet: false } as any,
+      });
+
+      if (pendingCount >= 4) {
+        // Trigger batch sync endpoint safely without blocking response
+        const adminHost = process.env.ADMIN_PANEL_URL || 'http://localhost:3000';
+        fetch(`${adminHost}/api/admin/trigger-sheet-export`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ forceSync: false }),
+        }).catch(() => {
+          // Failure leaves lead safely pending in Supabase for manual Sync Now or next batch
+        });
+      }
+    } catch (err) {
+      // Ignored: lead remains safely pending in Supabase
+    }
 
     return NextResponse.json({
       success: true,

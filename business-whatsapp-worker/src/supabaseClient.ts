@@ -141,6 +141,7 @@ export class WorkerSupabaseClient {
         sub_service: data.sub_service || null,
         message: data.message || 'Submitted via WhatsApp Bot',
         status: 'NEW',
+        synced_to_sheet: false,
       }),
     });
   }

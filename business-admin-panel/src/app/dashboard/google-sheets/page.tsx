@@ -8,8 +8,12 @@ export default function GoogleSheetsPage() {
   const [loading, setLoading] = useState(true);
   const [triggerStatus, setTriggerStatus] = useState<string | null>(null);
   const [hasGoogleToken, setHasGoogleToken] = useState(false);
+  const [pendingCount, setPendingCount] = useState<number>(0);
+  const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
+  const [syncing, setSyncing] = useState(false);
 
   useEffect(() => {
+    fetchSyncState();
     fetchExportLogs();
     checkGoogleToken();
   }, []);
@@ -23,6 +27,19 @@ export default function GoogleSheetsPage() {
       }
     } catch (e) {
       // Ignored
+    }
+  }
+
+  async function fetchSyncState() {
+    try {
+      const res = await fetch('/api/admin/trigger-sheet-export');
+      const data = await res.json();
+      if (data.success) {
+        setPendingCount(data.pendingCount || 0);
+        setLastSyncedAt(data.lastSyncedAt ? new Date(data.lastSyncedAt).toLocaleString('en-IN') : 'Never');
+      }
+    } catch (e) {
+      console.error('Failed to fetch sync state:', e);
     }
   }
 
@@ -57,8 +74,9 @@ export default function GoogleSheetsPage() {
     }
   }
 
-  async function handleManualSync() {
-    setTriggerStatus('Triggering Google Sheet Snapshot Export...');
+  async function handleSyncNow() {
+    setSyncing(true);
+    setTriggerStatus('Synchronizing pending leads to Google Sheets...');
     try {
       const supabase = getSupabaseAuthClient();
       const { data: { session } } = await supabase.auth.getSession();
@@ -72,54 +90,83 @@ export default function GoogleSheetsPage() {
         },
         body: JSON.stringify({
           userAccessToken: providerToken || null,
+          forceSync: true, // Sync ALL pending leads immediately
         }),
       });
 
       const data = await res.json();
       if (res.ok && data.success) {
-        setTriggerStatus(`✅ ${data.message || `Exported ${data.rows} rows successfully!`}`);
+        setTriggerStatus(`✅ ${data.message || 'Synchronized leads successfully!'}`);
       } else {
-        setTriggerStatus(`❌ Export Failed: ${data.error || 'Authentication required'}`);
+        setTriggerStatus(`❌ Sync Failed: ${data.error || 'Authentication required'}`);
       }
     } catch (e: any) {
-      setTriggerStatus(`❌ Error: ${e.message || 'Server error triggering export'}`);
+      setTriggerStatus(`❌ Error: ${e.message || 'Server error during sync'}`);
     }
+    setSyncing(false);
+    fetchSyncState();
     fetchExportLogs();
   }
 
   return (
     <div>
       <div className="top-bar">
-        <h1 className="page-title">Google Sheet Snapshot Export</h1>
+        <div>
+          <h1 className="page-title">Google Sheets Synchronization</h1>
+          <p style={{ color: '#94a3b8', fontSize: '0.85rem', marginTop: '0.2rem' }}>
+            Batch-based synchronization for website and WhatsApp leads.
+          </p>
+        </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
           <button onClick={handleConnectGoogle} className="btn" style={{ background: '#3b82f6', color: '#fff' }}>
             🔑 {hasGoogleToken ? 'Reconnect Google Account' : 'Connect Google Account'}
           </button>
-          <button onClick={handleManualSync} className="btn btn-primary">
-            🚀 Trigger Export Now
-          </button>
         </div>
       </div>
 
-      <div style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: '12px', padding: '1.5rem', marginBottom: '2rem' }}>
-        <h3 style={{ fontSize: '1.1rem', color: '#f59e0b', marginBottom: '0.5rem' }}>ℹ️ How Google Sheet Sync Works & How to Fix Connection</h3>
-        <p style={{ color: '#94a3b8', fontSize: '0.92rem', lineHeight: '1.6', marginBottom: '1rem' }}>
-          Google Sheets acts as an <strong>Output Snapshot</strong> for reporting purposes. You can connect your Google Account in 2 ways:
-        </p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-          <div style={{ background: 'rgba(255,255,255,0.04)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <strong style={{ color: '#60a5fa', display: 'block', marginBottom: '0.35rem' }}>Option 1: 1-Click Google OAuth (Recommended)</strong>
-            <p style={{ color: '#cbd5e1', fontSize: '0.85rem', lineHeight: '1.5' }}>
-              Click <strong>"🔑 Connect Google Account"</strong> above. Sign in with Google to grant Drive & Sheets permission. The system will automatically create a <code>Sanchay Business</code> folder and <code>Business Leads</code> sheet in your Google Drive!
-            </p>
+      {/* SYNC STATUS DASHBOARD PANEL */}
+      <div style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: '12px', padding: '1.5rem', marginBottom: '1.75rem' }}>
+        <h3 style={{ fontSize: '1.1rem', color: '#f59e0b', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          📊 Google Sheets Sync Status
+        </h3>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem', marginBottom: '1.25rem' }}>
+          <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <span style={{ fontSize: '0.8rem', color: '#94a3b8', display: 'block', marginBottom: '0.25rem' }}>Status</span>
+            <span style={{ color: hasGoogleToken ? '#10b981' : '#f59e0b', fontWeight: 700, fontSize: '1.05rem' }}>
+              {hasGoogleToken ? '🟢 Connected' : '🔑 Needs Google OAuth Connection'}
+            </span>
           </div>
-          <div style={{ background: 'rgba(255,255,255,0.04)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <strong style={{ color: '#34d399', display: 'block', marginBottom: '0.35rem' }}>Option 2: Service Account Environment Variables</strong>
-            <p style={{ color: '#cbd5e1', fontSize: '0.85rem', lineHeight: '1.5' }}>
-              Add <code>GOOGLE_SERVICE_ACCOUNT_EMAIL</code>, <code>GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY</code>, and <code>GOOGLE_SPREADSHEET_ID</code> to your server environment variables (Vercel / .env).
-            </p>
+
+          <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <span style={{ fontSize: '0.8rem', color: '#94a3b8', display: 'block', marginBottom: '0.25rem' }}>Last Synced</span>
+            <span style={{ color: '#f8fafc', fontWeight: 600, fontSize: '0.95rem' }}>
+              {lastSyncedAt}
+            </span>
+          </div>
+
+          <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <span style={{ fontSize: '0.8rem', color: '#94a3b8', display: 'block', marginBottom: '0.25rem' }}>Pending Leads</span>
+            <span style={{ color: pendingCount > 0 ? '#f59e0b' : '#10b981', fontWeight: 700, fontSize: '1.2rem' }}>
+              {pendingCount} lead(s)
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <button
+              onClick={handleSyncNow}
+              disabled={syncing}
+              className="btn btn-primary"
+              style={{ width: '100%', minHeight: '48px', fontSize: '1rem' }}
+            >
+              {syncing ? '⏳ Syncing...' : '🔄 Sync Now'}
+            </button>
           </div>
         </div>
+
+        <p style={{ color: '#94a3b8', fontSize: '0.82rem', lineHeight: '1.5' }}>
+          * Leads automatically sync in <strong>batches of 4</strong>. Clicking <strong>Sync Now</strong> immediately synchronizes ALL currently pending leads to Google Sheets, even if fewer than 4.
+        </p>
       </div>
 
       {triggerStatus && (
@@ -128,16 +175,16 @@ export default function GoogleSheetsPage() {
         </div>
       )}
 
-      <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>Export Execution History</h3>
+      <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>Synchronization History Log</h3>
       <div className="table-container">
         <table className="admin-table">
           <thead>
             <tr>
               <th>Timestamp</th>
-              <th>Type</th>
-              <th>Export Status</th>
-              <th>Rows Exported</th>
-              <th>Error Details</th>
+              <th>Trigger Type</th>
+              <th>Sync Status</th>
+              <th>Rows Synced</th>
+              <th>Log Details</th>
             </tr>
           </thead>
           <tbody>
@@ -147,7 +194,7 @@ export default function GoogleSheetsPage() {
               </tr>
             ) : exports.length === 0 ? (
               <tr>
-                <td colSpan={5} style={{ textAlign: 'center', color: '#94a3b8' }}>No sheet export runs logged yet.</td>
+                <td colSpan={5} style={{ textAlign: 'center', color: '#94a3b8' }}>No sync runs logged yet.</td>
               </tr>
             ) : (
               exports.map((e) => (
@@ -161,7 +208,7 @@ export default function GoogleSheetsPage() {
                   </td>
                   <td><strong>{e.row_count || e.rowCount || 0}</strong> rows</td>
                   <td style={{ color: e.error_message || e.errorMessage ? '#ef4444' : '#94a3b8' }}>
-                    {e.error_message || e.errorMessage || 'None (Clean Run)'}
+                    {e.error_message || e.errorMessage || 'Clean Run'}
                   </td>
                 </tr>
               ))
@@ -172,4 +219,3 @@ export default function GoogleSheetsPage() {
     </div>
   );
 }
-

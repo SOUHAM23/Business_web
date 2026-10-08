@@ -37,6 +37,8 @@ export const metadata: Metadata = {
   },
 };
 
+import PageViewTracker from "@/components/PageViewTracker";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -44,7 +46,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${cinzel.variable} ${jakartaSans.variable}`}>
-      <body>{children}</body>
+      <body>
+        <PageViewTracker />
+        {children}
+      </body>
     </html>
   );
 }

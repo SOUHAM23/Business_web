@@ -239,9 +239,13 @@
 }
 
 @media (max-width: 992px) {
+  .hero-section {
+    overflow-x: hidden;
+  }
+
   .hero-grid {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.75rem;
     text-align: center;
   }
 
@@ -258,10 +262,32 @@
     justify-content: center;
   }
 
+  .hero-portrait-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .hero-portrait-glow {
+    width: 260px;
+    height: 260px;
+  }
+
   .hero-portrait-frame {
-    max-width: 360px;
+    max-width: 320px;
     height: auto;
-    padding-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
+  }
+
+  .portrait-image-stack {
+    height: 270px;
+  }
+
+  .portrait-floating-badge {
+    margin-top: 0.65rem !important;
+    padding: 0.65rem 1.1rem;
+    max-width: 92%;
   }
 }
 

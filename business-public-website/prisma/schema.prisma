@@ -42,15 +42,17 @@ model WhatsAppSession {
 }
 
 model Enquiry {
-  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  customerId String?   @map("customer_id") @db.Uuid
-  source     String    @default("website") @db.VarChar(50)
-  service    String    @db.VarChar(100)
-  subService String?   @map("sub_service") @db.VarChar(100)
-  message    String?   @db.Text
-  status     String    @default("NEW") @db.VarChar(50)
-  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt  DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId    String?   @map("customer_id") @db.Uuid
+  source        String    @default("website") @db.VarChar(50)
+  service       String    @db.VarChar(100)
+  subService    String?   @map("sub_service") @db.VarChar(100)
+  message       String?   @db.Text
+  status        String    @default("NEW") @db.VarChar(50)
+  syncedToSheet Boolean   @default(false) @map("synced_to_sheet")
+  syncedAt      DateTime? @map("synced_at") @db.Timestamptz
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   customer Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
 
