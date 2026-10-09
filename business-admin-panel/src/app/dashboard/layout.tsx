@@ -37,6 +37,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { label: '📅 Appointments', href: '/dashboard/appointments' },
     { label: '👥 Customers CRM', href: '/dashboard/customers' },
     { label: '✏️ Website Content', href: '/dashboard/content' },
+    { label: '📋 Recent Updates', href: '/dashboard/changelog' },
     { label: '📑 Google Sheet Sync', href: '/dashboard/google-sheets' },
     { label: '🛡️ Backup Monitor', href: '/dashboard/backups' },
     { label: '📜 Audit Logs', href: '/dashboard/audit-logs' },

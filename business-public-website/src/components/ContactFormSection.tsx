@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function ContactFormSection() {
+  const [contactEmail, setContactEmail] = useState('contact@sanchaypath.com');
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -13,6 +14,23 @@ export default function ContactFormSection() {
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [feedbackMsg, setFeedbackMsg] = useState('');
+
+  useEffect(() => {
+    async function fetchContactEmail() {
+      try {
+        const res = await fetch('/api/content');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.content && json.content.contact_email) {
+            setContactEmail(json.content.contact_email);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch contact_email:', err);
+      }
+    }
+    fetchContactEmail();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,7 +130,7 @@ export default function ContactFormSection() {
               </div>
               <div className="contact-chip">
                 <span>✉️ Email:</span>
-                <a href="mailto:contact@sanchaypath.com">contact@sanchaypath.com</a>
+                <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
               </div>
             </div>
           </div>

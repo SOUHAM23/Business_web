@@ -131,7 +131,7 @@ export default function Home() {
             <h4 style={{ color: 'var(--accent-gold)', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 700 }}>📞 Advisory Helpline</h4>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: '1.5' }}>
               <strong>Sukanta Dutta</strong> | AMFI-Registered MFD (ARN: 347438)<br />
-              Email: contact@sanchaypath.com
+              Email: <a href="mailto:contact@sanchaypath.com" style={{ color: 'var(--accent-gold)', textDecoration: 'none' }}>contact@sanchaypath.com</a>
             </p>
           </div>
 
