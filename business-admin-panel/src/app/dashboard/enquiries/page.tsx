@@ -11,6 +11,7 @@ export default function EnquiriesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedService, setSelectedService] = useState('ALL');
   const [selectedStatus, setSelectedStatus] = useState('ALL');
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState('ALL');
   const [sortBy, setSortBy] = useState<'newest' | 'oldest'>('newest');
 
   // Modal State for reading full message
@@ -25,7 +26,7 @@ export default function EnquiriesPage() {
     const supabase = getSupabaseAuthClient();
     const { data } = await supabase
       .from('enquiries')
-      .select('id, service, source, message, status, created_at, customers(name, phone, email, location)')
+      .select('id, service, source, message, status, age, created_at, customers(name, phone, email, location, age)')
       .order('created_at', { ascending: false });
 
     if (data) setEnquiries(data);
@@ -59,6 +60,16 @@ export default function EnquiriesPage() {
       if (selectedStatus !== 'ALL' && item.status !== selectedStatus) {
         return false;
       }
+      // Age Group Filter
+      const leadAge = item.age || item.customers?.age;
+      if (selectedAgeGroup === '18-30') {
+        if (!leadAge || leadAge < 18 || leadAge > 30) return false;
+      } else if (selectedAgeGroup === '31-50') {
+        if (!leadAge || leadAge < 31 || leadAge > 50) return false;
+      } else if (selectedAgeGroup === '51-99') {
+        if (!leadAge || leadAge < 51 || leadAge > 99) return false;
+      }
+
       // Search query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
@@ -67,7 +78,8 @@ export default function EnquiriesPage() {
         const emailMatch = item.customers?.email?.toLowerCase().includes(q);
         const serviceMatch = item.service?.toLowerCase().includes(q);
         const messageMatch = item.message?.toLowerCase().includes(q);
-        if (!nameMatch && !phoneMatch && !emailMatch && !serviceMatch && !messageMatch) {
+        const ageMatch = String(leadAge || '').includes(q);
+        if (!nameMatch && !phoneMatch && !emailMatch && !serviceMatch && !messageMatch && !ageMatch) {
           return false;
         }
       }
@@ -83,6 +95,7 @@ export default function EnquiriesPage() {
     setSearchQuery('');
     setSelectedService('ALL');
     setSelectedStatus('ALL');
+    setSelectedAgeGroup('ALL');
     setSortBy('newest');
   };
 
@@ -156,6 +169,21 @@ export default function EnquiriesPage() {
             </select>
           </div>
 
+          {/* Age Group Filter */}
+          <div className="filter-select-wrapper">
+            <label className="filter-label">Age Group:</label>
+            <select
+              value={selectedAgeGroup}
+              onChange={(e) => setSelectedAgeGroup(e.target.value)}
+              className="filter-select"
+            >
+              <option value="ALL">All Ages</option>
+              <option value="18-30">18 – 30 Years (Young)</option>
+              <option value="31-50">31 – 50 Years (Mid Career)</option>
+              <option value="51-99">51 – 99 Years (Senior)</option>
+            </select>
+          </div>
+
           {/* Sort Order */}
           <div className="filter-select-wrapper">
             <label className="filter-label">Sort:</label>
@@ -174,7 +202,7 @@ export default function EnquiriesPage() {
           <span className="filter-counter-badge">
             Showing <strong>{filteredEnquiries.length}</strong> of {enquiries.length}
           </span>
-          {(searchQuery || selectedService !== 'ALL' || selectedStatus !== 'ALL' || sortBy !== 'newest') && (
+          {(searchQuery || selectedService !== 'ALL' || selectedStatus !== 'ALL' || selectedAgeGroup !== 'ALL' || sortBy !== 'newest') && (
             <button onClick={resetFilters} className="btn-reset-filters">
               Clear Filters
             </button>
@@ -191,6 +219,7 @@ export default function EnquiriesPage() {
               <th>Customer</th>
               <th>Phone</th>
               <th>Email</th>
+              <th>Age</th>
               <th>Service</th>
               <th>Source</th>
               <th>Message</th>
@@ -200,13 +229,13 @@ export default function EnquiriesPage() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={8} style={{ textAlign: 'center', color: '#94a3b8', padding: '2rem' }}>
+                <td colSpan={9} style={{ textAlign: 'center', color: '#94a3b8', padding: '2rem' }}>
                   Loading enquiries...
                 </td>
               </tr>
             ) : filteredEnquiries.length === 0 ? (
               <tr>
-                <td colSpan={8} style={{ textAlign: 'center', color: '#94a3b8', padding: '2rem' }}>
+                <td colSpan={9} style={{ textAlign: 'center', color: '#94a3b8', padding: '2rem' }}>
                   No matching enquiries found. Try adjusting your search or filters.
                 </td>
               </tr>
@@ -214,6 +243,7 @@ export default function EnquiriesPage() {
               filteredEnquiries.map((item) => {
                 const rawPhone = item.customers?.phone || '';
                 const cleanPhone = rawPhone.replace(/\D/g, '');
+                const leadAge = item.age || item.customers?.age;
                 return (
                   <tr key={item.id} className="enquiry-row">
                     <td style={{ whiteSpace: 'nowrap', fontSize: '0.82rem' }}>
@@ -239,6 +269,11 @@ export default function EnquiriesPage() {
                       ) : (
                         'N/A'
                       )}
+                    </td>
+                    <td>
+                      <strong style={{ color: '#f59e0b', fontSize: '0.88rem' }}>
+                        {leadAge ? `${leadAge} yrs` : 'N/A'}
+                      </strong>
                     </td>
                     <td>
                       <span className="service-pill">{item.service}</span>

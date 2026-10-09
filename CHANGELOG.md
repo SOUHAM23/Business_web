@@ -4,6 +4,15 @@ All notable changes to **Sanchay Path** (`business-public-website`, `business-ad
 
 ---
 
+## 🚀 [v1.5.0] - 2026-10-10
+### 🗃️ Database & Form Enhancements
+- **Age Field in Consultation Form**: Added required Age input field (min 18 to max 99 years, max 2 digits) on the public consultation booking form.
+- **Database Schema Update**: Added `age Int?` field to `Enquiry` model in Prisma & Supabase database tables.
+- **Google Sheets Integration**: Added **"Age"** column to Google Sheets sync exports.
+- **Admin Panel Age Filters & CRM**: Added **Age Column** and **Age Demographic Filters** (`18-30`, `31-50`, `51-99`) to Enquiries and Customer CRM directory pages.
+
+---
+
 ## 🚀 [v1.4.0] - 2026-10-09
 ### 🎨 UI & Design Systems
 - **SIP Calculator Light Mode Overhaul**: Replaced dark muddy background panel with warm cream/amber glass container (`rgba(254, 243, 199, 0.45)`) and gold interactive input pills (`#d97706`).

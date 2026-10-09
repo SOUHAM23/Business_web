@@ -48,6 +48,7 @@ model Enquiry {
   service       String    @db.VarChar(100)
   subService    String?   @map("sub_service") @db.VarChar(100)
   message       String?   @db.Text
+  age           Int?
   status        String    @default("NEW") @db.VarChar(50)
   syncedToSheet Boolean   @default(false) @map("synced_to_sheet")
   syncedAt      DateTime? @map("synced_at") @db.Timestamptz

@@ -144,7 +144,7 @@ export async function syncLeadsToUserSheet(
 ): Promise<boolean> {
   try {
     const res = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/Sheet1!A1:I${rows.length}?valueInputOption=USER_ENTERED`,
+      `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/Sheet1!A1:J${rows.length}?valueInputOption=USER_ENTERED`,
       {
         method: 'PUT',
         headers: {
@@ -152,7 +152,7 @@ export async function syncLeadsToUserSheet(
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          range: `Sheet1!A1:I${rows.length}`,
+          range: `Sheet1!A1:J${rows.length}`,
           majorDimension: 'ROWS',
           values: rows,
         }),

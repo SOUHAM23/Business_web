@@ -8,6 +8,7 @@ const contactFormSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(100),
   phone: z.string().min(10, 'Phone number must be at least 10 digits').max(15),
   email: z.string().email('Invalid email address').optional().or(z.literal('')),
+  age: z.union([z.number(), z.string()]).optional().nullable(),
   service: z.string().min(1, 'Please select a service category'),
   message: z.string().max(1000, 'Message cannot exceed 1000 characters').optional(),
 });
@@ -49,13 +50,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { name, phone, email, service, message } = validation.data;
+    const { name, phone, email, age, service, message } = validation.data;
 
-    // 3. Sanitize Inputs
+    // 3. Sanitize & Parse Inputs
     const cleanName = sanitizeText(name);
     const cleanPhone = sanitizePhoneNumber(phone);
     const cleanEmail = email ? sanitizeText(email).toLowerCase() : null;
     const cleanMessage = sanitizeText(message || '');
+    
+    const parsedAge = age ? parseInt(String(age), 10) : null;
+    const cleanAge = (parsedAge && !isNaN(parsedAge) && parsedAge >= 18 && parsedAge <= 99) ? parsedAge : null;
 
     // 4. Prisma ORM Transaction (Upsert Customer & Create Enquiry)
     const customer = await prisma.customer.upsert({
@@ -63,11 +67,13 @@ export async function POST(req: NextRequest) {
       update: {
         name: cleanName,
         email: cleanEmail || undefined,
+        age: cleanAge || undefined,
       },
       create: {
         phone: cleanPhone,
         name: cleanName,
         email: cleanEmail,
+        age: cleanAge,
       },
     });
 
@@ -77,6 +83,7 @@ export async function POST(req: NextRequest) {
         source: 'website',
         service: service,
         message: cleanMessage || `Enquiry from website contact form for ${service}`,
+        age: cleanAge,
         status: 'NEW',
         syncedToSheet: false,
       } as any,

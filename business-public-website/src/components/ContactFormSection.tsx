@@ -8,6 +8,7 @@ export default function ContactFormSection() {
     name: '',
     phone: '',
     email: '',
+    age: '',
     service: 'SIP & Mutual Funds',
     message: '',
   });
@@ -43,6 +44,15 @@ export default function ContactFormSection() {
       return;
     }
 
+    if (formData.age) {
+      const parsedAge = parseInt(formData.age, 10);
+      if (isNaN(parsedAge) || parsedAge < 18 || parsedAge > 99) {
+        setStatus('error');
+        setFeedbackMsg('Age must be a valid 2-digit number between 18 and 99 years.');
+        return;
+      }
+    }
+
     try {
 
       const res = await fetch('/api/contact', {
@@ -60,6 +70,7 @@ export default function ContactFormSection() {
           name: '',
           phone: '',
           email: '',
+          age: '',
           service: 'SIP & Mutual Funds',
           message: '',
         });
@@ -194,6 +205,24 @@ export default function ContactFormSection() {
                   placeholder="e.g. ramesh@example.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="input-control"
+                />
+              </div>
+
+              <div className="form-field-group">
+                <label htmlFor="age">Your Age (Years, 18–99) *</label>
+                <input
+                  id="age"
+                  type="number"
+                  required
+                  min={18}
+                  max={99}
+                  placeholder="e.g. 35"
+                  value={formData.age}
+                  onChange={(e) => {
+                    const numericVal = e.target.value.replace(/\D/g, '').slice(0, 2);
+                    setFormData({ ...formData, age: numericVal });
+                  }}
                   className="input-control"
                 />
               </div>

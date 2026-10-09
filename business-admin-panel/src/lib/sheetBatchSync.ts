@@ -51,12 +51,13 @@ export async function processBatchSheetSync(options: SyncOptions = {}) {
   });
 
   const rows = [
-    ['Date', 'Customer Name', 'Mobile', 'Email', 'Location', 'Service', 'Source', 'Status', 'Message'],
-    ...allEnquiries.map((e) => [
+    ['Date', 'Customer Name', 'Mobile', 'Email', 'Age', 'Location', 'Service', 'Source', 'Status', 'Message'],
+    ...allEnquiries.map((e: any) => [
       e.createdAt ? new Date(e.createdAt).toLocaleString('en-IN') : '',
       e.customer?.name || 'N/A',
       e.customer?.phone || 'N/A',
       e.customer?.email || 'N/A',
+      (e.age || e.customer?.age) ? String(e.age || e.customer?.age) : 'N/A',
       e.customer?.location || 'N/A',
       e.service || 'N/A',
       e.source || 'N/A',
