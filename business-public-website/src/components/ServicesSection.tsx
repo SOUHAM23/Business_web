@@ -185,6 +185,24 @@ export default function ServicesSection() {
     setSelectedService(null);
   };
 
+  useEffect(() => {
+    if (selectedService) {
+      document.body.style.overflow = 'hidden';
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          closeServiceModal();
+        }
+      };
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.body.style.overflow = '';
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    } else {
+      document.body.style.overflow = '';
+    }
+  }, [selectedService]);
+
   const handleBookConsultation = (serviceTitle: string) => {
     closeServiceModal();
     const contactForm = document.getElementById('contact-form') || document.getElementById('contact');
