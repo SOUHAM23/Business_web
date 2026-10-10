@@ -31,7 +31,7 @@ export async function middleware(request: NextRequest) {
   const isPublicRoute =
     pathname === '/login' ||
     pathname.startsWith('/auth/callback') ||
-    pathname.startsWith('/api/auth/logout') ||
+    pathname.startsWith('/api/auth') ||
     pathname === '/unauthorized';
 
   const isProtectedRoute = pathname.startsWith('/dashboard') || pathname.startsWith('/api/admin');

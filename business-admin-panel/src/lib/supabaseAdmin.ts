@@ -1,3 +1,4 @@
+import { createBrowserClient } from '@supabase/ssr';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '';
@@ -8,13 +9,24 @@ let authClientInstance: any = null;
 
 /**
  * Public Client for Supabase Auth in Client Components (Singleton Instance)
+ * Uses @supabase/ssr createBrowserClient to automatically manage session cookies for 12 hours
  */
 export function getSupabaseAuthClient() {
   if (!supabaseUrl || !supabaseAnonKey) {
     console.warn('Supabase URL or Anon key missing in environment');
   }
+  if (typeof window === 'undefined') {
+    return createClient(supabaseUrl, supabaseAnonKey);
+  }
   if (!authClientInstance) {
-    authClientInstance = createClient(supabaseUrl, supabaseAnonKey);
+    authClientInstance = createBrowserClient(supabaseUrl, supabaseAnonKey, {
+      cookieOptions: {
+        maxAge: 12 * 60 * 60, // 12 hours
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      },
+    });
   }
   return authClientInstance;
 }

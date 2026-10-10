@@ -50,6 +50,11 @@ function AdminLoginContent() {
       const supabase = getSupabaseAuthClient();
 
       const origin = typeof window !== 'undefined' ? window.location.origin : '';
+      if (typeof window !== 'undefined') {
+        try {
+          sessionStorage.setItem('admin_return_to', returnTo);
+        } catch {}
+      }
       const redirectUrl = `${origin}/auth/callback?returnTo=${encodeURIComponent(returnTo)}`;
 
       const { error } = await supabase.auth.signInWithOAuth({
