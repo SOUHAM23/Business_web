@@ -1,9 +1,19 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { execSync } from 'child_process';
+import { getAuthenticatedAdminServer } from '@/lib/serverAuth';
 
 export async function GET() {
   try {
+    const admin = await getAuthenticatedAdminServer();
+    if (!admin) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized: Admin authentication required' },
+        { status: 401 }
+      );
+    }
+
     const changelogPath = path.join(process.cwd(), '..', 'CHANGELOG.md');
     let content = '';
 
@@ -16,10 +26,17 @@ export async function GET() {
       }
     }
 
+    let latestCommit = 'main';
+    try {
+      latestCommit = execSync('git rev-parse --short HEAD', { encoding: 'utf-8' }).trim();
+    } catch {
+      latestCommit = 'latest';
+    }
+
     return NextResponse.json({
       success: true,
       content: content || '# No CHANGELOG.md found.',
-      latestCommit: '3799309',
+      latestCommit,
       branch: 'main',
     });
   } catch (err: any) {

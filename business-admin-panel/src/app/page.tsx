@@ -1,5 +1,13 @@
 import { redirect } from 'next/navigation';
+import { getAuthenticatedAdminServer } from '@/lib/serverAuth';
 
-export default function RootPage() {
-  redirect('/login');
+export const dynamic = 'force-dynamic';
+
+export default async function RootPage() {
+  const admin = await getAuthenticatedAdminServer();
+  if (admin) {
+    redirect('/dashboard');
+  } else {
+    redirect('/login');
+  }
 }

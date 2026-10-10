@@ -1,11 +1,47 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { getSupabaseAuthClient } from '@/lib/supabaseAdmin';
 
-export default function AdminLoginPage() {
+function AdminLoginContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
+
+  const returnTo = searchParams.get('returnTo') || '/dashboard';
+  const urlError = searchParams.get('error');
+  const deniedEmail = searchParams.get('email');
+
+  useEffect(() => {
+    if (urlError === 'unauthorized_email') {
+      setStatus('error');
+      setErrorMsg(
+        deniedEmail
+          ? `Access Denied: Account (${deniedEmail}) is not registered in the Sanchay Path Super Admin allowlist.`
+          : 'Access Denied: This Google account is not authorized to access the admin portal.'
+      );
+    } else if (urlError === 'oauth_exchange_failed') {
+      setStatus('error');
+      setErrorMsg('Authentication failed during secure token exchange. Please try again.');
+    } else if (urlError) {
+      setStatus('error');
+      setErrorMsg(`Authentication error: ${urlError}`);
+    }
+
+    // Check if user already has an active session
+    const checkActiveSession = async () => {
+      try {
+        const supabase = getSupabaseAuthClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          router.replace(returnTo);
+        }
+      } catch {}
+    };
+    checkActiveSession();
+  }, [urlError, deniedEmail, returnTo, router]);
 
   const handleGoogleLogin = async () => {
     try {
@@ -14,10 +50,7 @@ export default function AdminLoginPage() {
       const supabase = getSupabaseAuthClient();
 
       const origin = typeof window !== 'undefined' ? window.location.origin : '';
-      const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-      const isSubPath = pathname.startsWith('/admin');
-      const targetPath = isSubPath ? '/admin/dashboard' : '/dashboard';
-      const redirectUrl = origin ? `${origin}${targetPath}` : 'http://localhost:3001/dashboard';
+      const redirectUrl = `${origin}/auth/callback?returnTo=${encodeURIComponent(returnTo)}`;
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -31,21 +64,19 @@ export default function AdminLoginPage() {
         },
       });
 
-
       if (error) {
         setStatus('error');
         if (error.message.includes('provider is not enabled') || error.message.includes('validation_failed')) {
-          setErrorMsg('Google OAuth Provider is currently disabled in your Supabase Dashboard. Please enable Google Provider in Supabase Project Auth Settings.');
+          setErrorMsg('Google OAuth Provider is currently disabled in your Supabase Project Auth Settings.');
         } else {
           setErrorMsg(error.message);
         }
       }
     } catch (err: any) {
       setStatus('error');
-      setErrorMsg('Google OAuth initialization failed. Please ensure Google Provider is enabled in Supabase.');
+      setErrorMsg('Google OAuth initialization failed. Please check network connection.');
     }
   };
-
 
   return (
     <div
@@ -191,10 +222,18 @@ export default function AdminLoginPage() {
               margin: 0,
             }}
           >
-            🔒 Restricted Access. Only pre-authorized Google Super Admin accounts (Sukanta Dutta & Partner) are granted portal access.
+            🔒 Restricted Access. Only pre-authorized Google Super Admin accounts are granted portal access. Sessions remain securely active for 12 hours.
           </p>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100vh', background: '#0f172a' }} />}>
+      <AdminLoginContent />
+    </Suspense>
   );
 }

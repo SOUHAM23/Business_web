@@ -16,20 +16,39 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       try {
         const supabase = getSupabaseAuthClient();
         const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          setCurrentUser({
-            email: user.email,
-            name: user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'Admin',
-          });
+
+        if (!user || !user.email) {
+          router.replace('/login?returnTo=' + encodeURIComponent(pathname));
+          return;
         }
+
+        // Verify user against admin_users table
+        const { data: adminRecord, error: adminErr } = await supabase
+          .from('admin_users')
+          .select('role, active')
+          .eq('email', user.email.toLowerCase())
+          .eq('active', true)
+          .single();
+
+        if (adminErr || !adminRecord) {
+          await supabase.auth.signOut();
+          router.replace('/login?error=unauthorized_email&email=' + encodeURIComponent(user.email));
+          return;
+        }
+
+        setCurrentUser({
+          email: user.email,
+          name: user.user_metadata?.full_name || user.user_metadata?.name || user.email.split('@')[0],
+        });
       } catch (err) {
         console.error('Failed to fetch authenticated user session:', err);
+        router.replace('/login');
       } finally {
         setLoadingUser(false);
       }
     };
     fetchUser();
-  }, []);
+  }, [pathname, router]);
 
   const navItems = [
     { label: '📊 Overview', href: '/dashboard' },
@@ -44,14 +63,30 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   ];
 
   const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch {}
     const supabase = getSupabaseAuthClient();
     await supabase.auth.signOut();
-    router.push('/login');
+    router.replace('/login');
   };
 
   const userInitial = currentUser?.name
     ? currentUser.name.charAt(0).toUpperCase()
     : (currentUser?.email ? currentUser.email.charAt(0).toUpperCase() : 'A');
+
+  if (loadingUser) {
+    return (
+      <div style={{ minHeight: '100vh', background: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f59e0b', fontFamily: "'Inter', sans-serif", flexDirection: 'column', gap: '1rem' }}>
+        <div style={{ width: '40px', height: '40px', border: '3px solid rgba(245, 158, 11, 0.2)', borderTopColor: '#f59e0b', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+        <span style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Verifying 12-Hour Secure Session...</span>
+      </div>
+    );
+  }
+
+  if (!currentUser) {
+    return null;
+  }
 
   return (
     <div className="admin-layout">

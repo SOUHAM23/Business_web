@@ -1,11 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { processBatchSheetSync, BATCH_SIZE } from '@/lib/sheetBatchSync';
+import { getAuthenticatedAdminServer } from '@/lib/serverAuth';
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    // Authorize admin session
+    const admin = await getAuthenticatedAdminServer();
+    const internalSecret = req.headers.get('x-internal-secret');
+    const isInternal = internalSecret && internalSecret === process.env.REVALIDATION_SECRET;
+
+    if (!admin && !isInternal) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized: Admin authentication required' },
+        { status: 401 }
+      );
+    }
+
     const pendingCount = await prisma.enquiry.count({
-      where: { syncedToSheet: false },
+      where: { syncedToSheet: false } as any,
     });
 
     const lastExport = await prisma.sheetExport.findFirst({
@@ -27,6 +40,18 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
+    // Authorize admin session or internal website batch trigger
+    const admin = await getAuthenticatedAdminServer();
+    const internalSecret = req.headers.get('x-internal-secret');
+    const isInternal = internalSecret && internalSecret === process.env.REVALIDATION_SECRET;
+
+    if (!admin && !isInternal) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized: Admin authentication required' },
+        { status: 401 }
+      );
+    }
+
     const body = await req.json().catch(() => ({}));
     const userAccessToken = body.userAccessToken || req.headers.get('x-google-user-token');
     const forceSync = body.forceSync !== undefined ? body.forceSync : true;

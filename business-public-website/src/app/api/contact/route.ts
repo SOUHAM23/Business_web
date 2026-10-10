@@ -100,7 +100,10 @@ export async function POST(req: NextRequest) {
         const adminHost = process.env.ADMIN_PANEL_URL || 'http://localhost:3000';
         fetch(`${adminHost}/api/admin/trigger-sheet-export`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'x-internal-secret': process.env.REVALIDATION_SECRET || '',
+          },
           body: JSON.stringify({ forceSync: false }),
         }).catch(() => {
           // Failure leaves lead safely pending in Supabase for manual Sync Now or next batch
