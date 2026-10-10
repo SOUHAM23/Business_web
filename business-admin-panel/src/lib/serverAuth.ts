@@ -25,7 +25,6 @@ export async function createServerSupabaseClient() {
             cookieStore.set(name, value, {
               ...options,
               maxAge: SESSION_MAX_AGE_SECONDS,
-              httpOnly: true,
               secure: process.env.NODE_ENV === 'production',
               sameSite: 'lax',
               path: '/',
@@ -55,7 +54,6 @@ export function createMiddlewareSupabaseClient(request: NextRequest, response: N
           response.cookies.set(name, value, {
             ...options,
             maxAge: SESSION_MAX_AGE_SECONDS,
-            httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
             path: '/',

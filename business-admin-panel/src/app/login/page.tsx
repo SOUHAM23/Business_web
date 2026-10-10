@@ -25,15 +25,63 @@ function AdminLoginContent() {
     } else if (urlError === 'oauth_exchange_failed') {
       setStatus('error');
       setErrorMsg('Authentication failed during secure token exchange. Please try again.');
-    } else if (urlError) {
+    } else if (urlError && urlError !== 'missing_code') {
       setStatus('error');
       setErrorMsg(`Authentication error: ${urlError}`);
+    } else if (urlError === 'missing_code') {
+      // Clear legacy stale error from URL without showing error banner
+      if (typeof window !== 'undefined') {
+        const cleanUrl = window.location.pathname + (returnTo !== '/dashboard' ? `?returnTo=${encodeURIComponent(returnTo)}` : '');
+        window.history.replaceState({}, '', cleanUrl);
+      }
     }
 
-    // Check if user already has an active session
+    // Check if user already has an active session or hash tokens from OAuth redirect
     const checkActiveSession = async () => {
       try {
         const supabase = getSupabaseAuthClient();
+
+        // 1. Check if URL hash contains returned OAuth tokens
+        if (typeof window !== 'undefined' && window.location.hash.includes('access_token')) {
+          setStatus('loading');
+          setErrorMsg('');
+
+          const session: any = await new Promise((resolve) => {
+            const timeout = setTimeout(() => resolve(null), 3000);
+            const { data: { subscription } } = supabase.auth.onAuthStateChange((event: string, s: any) => {
+              if (s?.user?.email) {
+                clearTimeout(timeout);
+                subscription.unsubscribe();
+                resolve(s);
+              }
+            });
+          });
+
+          if (session?.user?.email) {
+            const userEmail = session.user.email.toLowerCase();
+            const res = await fetch('/api/auth/session', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                access_token: session.access_token,
+                refresh_token: session.refresh_token,
+                email: userEmail,
+              }),
+            });
+            const data = await res.json();
+            if (res.ok && data.authorized) {
+              window.location.href = returnTo.startsWith('/dashboard') ? returnTo : '/dashboard';
+              return;
+            } else {
+              await supabase.auth.signOut();
+              setStatus('error');
+              setErrorMsg(`Access Denied: Account (${userEmail}) is not in the Super Admin allowlist.`);
+              return;
+            }
+          }
+        }
+
+        // 2. Regular check for existing session
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           router.replace(returnTo);

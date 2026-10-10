@@ -51,7 +51,6 @@ export async function POST(req: NextRequest) {
             cookieStore.set(name, value, {
               ...options,
               maxAge: SESSION_MAX_AGE_SECONDS,
-              httpOnly: true,
               secure: process.env.NODE_ENV === 'production',
               sameSite: 'lax',
               path: '/',
@@ -59,7 +58,6 @@ export async function POST(req: NextRequest) {
             response.cookies.set(name, value, {
               ...options,
               maxAge: SESSION_MAX_AGE_SECONDS,
-              httpOnly: true,
               secure: process.env.NODE_ENV === 'production',
               sameSite: 'lax',
               path: '/',
